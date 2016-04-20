@@ -1,6 +1,7 @@
 # ######################################################################
 #                                                                      #
 #          Jacques-Henri Jourdan, INRIA Paris-Rocquencourt             #
+#          Francois Pottier, INRIA Paris-Rocquencourt                  #
 #                                                                      #
 #  Copyright Institut National de Recherche en Informatique et en      #
 #  Automatique.  All rights reserved.  This file is distributed        #
@@ -11,13 +12,16 @@
 #                                                                      #
 # ######################################################################
 
-.PHONY: all clean realclean
+.PHONY: all test clean realclean
 
 MENHIR := menhir --no-stdlib --unused-token IMAGINARY -lg 1 -la 1 -v
 
 all:
 	ocamlbuild -menhir "$(MENHIR)" lexer.native
 	mv lexer.native parse
+
+test: all
+	cram tests/tests.t
 
 clean:
 	rm -rf _build parse
