@@ -1,0 +1,2 @@
+true: use_menhir, infer, explain
+"parser_ansi_compatible.mly": external_tokens(Parser)
