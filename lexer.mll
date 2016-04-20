@@ -17,55 +17,55 @@ open Context
 open Parser
 open Options
 
-let lexicon : (string, unit -> token) Hashtbl.t = Hashtbl.create 17
+let lexicon : (string, token) Hashtbl.t = Hashtbl.create 17
 
 let () =
   List.iter (fun (key, builder) -> Hashtbl.add lexicon key builder)
-    [ ("_Alignas", fun () -> ALIGNAS);
-      ("_Alignof", fun () -> ALIGNOF);
-      ("_Atomic", fun () -> ATOMIC);
-      ("_Bool", fun () -> BOOL);
-      ("_Complex", fun () -> COMPLEX);
-      ("_Generic", fun () -> GENERIC);
-      ("_Imaginary", fun () -> IMAGINARY);
-      ("_Noreturn", fun () -> NORETURN);
-      ("_Static_assert", fun () -> STATIC_ASSERT);
-      ("_Thread_local", fun () -> THREAD_LOCAL);
-      ("alignof", fun () -> ALIGNOF);
-      ("auto", fun () -> AUTO);
-      ("break", fun () -> BREAK);
-      ("case", fun () -> CASE);
-      ("char", fun () -> CHAR);
-      ("const", fun () -> CONST);
-      ("continue", fun () -> CONTINUE);
-      ("default", fun () -> DEFAULT);
-      ("do", fun () -> DO);
-      ("double", fun () -> DOUBLE);
-      ("else", fun () -> ELSE);
-      ("enum", fun () -> ENUM);
-      ("extern", fun () -> EXTERN);
-      ("float", fun () -> FLOAT);
-      ("for", fun () -> FOR);
-      ("goto", fun () -> GOTO);
-      ("if", fun () -> IF);
-      ("inline", fun () -> INLINE);
-      ("int", fun () -> INT);
-      ("long", fun () -> LONG);
-      ("register", fun () -> REGISTER);
-      ("restrict", fun () -> RESTRICT);
-      ("return", fun () -> RETURN);
-      ("short", fun () -> SHORT);
-      ("signed", fun () -> SIGNED);
-      ("sizeof", fun () -> SIZEOF);
-      ("static", fun () -> STATIC);
-      ("struct", fun () -> STRUCT);
-      ("switch", fun () -> SWITCH);
-      ("typedef", fun () -> TYPEDEF);
-      ("union", fun () -> UNION);
-      ("unsigned", fun () -> UNSIGNED);
-      ("void", fun () -> VOID);
-      ("volatile", fun () -> VOLATILE);
-      ("while", fun () -> WHILE)]
+    [ ("_Alignas", ALIGNAS);
+      ("_Alignof", ALIGNOF);
+      ("_Atomic", ATOMIC);
+      ("_Bool", BOOL);
+      ("_Complex", COMPLEX);
+      ("_Generic", GENERIC);
+      ("_Imaginary", IMAGINARY);
+      ("_Noreturn", NORETURN);
+      ("_Static_assert", STATIC_ASSERT);
+      ("_Thread_local", THREAD_LOCAL);
+      ("alignof", ALIGNOF);
+      ("auto", AUTO);
+      ("break", BREAK);
+      ("case", CASE);
+      ("char", CHAR);
+      ("const", CONST);
+      ("continue", CONTINUE);
+      ("default", DEFAULT);
+      ("do", DO);
+      ("double", DOUBLE);
+      ("else", ELSE);
+      ("enum", ENUM);
+      ("extern", EXTERN);
+      ("float", FLOAT);
+      ("for", FOR);
+      ("goto", GOTO);
+      ("if", IF);
+      ("inline", INLINE);
+      ("int", INT);
+      ("long", LONG);
+      ("register", REGISTER);
+      ("restrict", RESTRICT);
+      ("return", RETURN);
+      ("short", SHORT);
+      ("signed", SIGNED);
+      ("sizeof", SIZEOF);
+      ("static", STATIC);
+      ("struct", STRUCT);
+      ("switch", SWITCH);
+      ("typedef", TYPEDEF);
+      ("union", UNION);
+      ("unsigned", UNSIGNED);
+      ("void", VOID);
+      ("volatile", VOLATILE);
+      ("while", WHILE)]
 
 let init _filename channel : Lexing.lexbuf =
   Lexing.from_channel channel
@@ -220,7 +220,7 @@ rule initial = parse
   | ","                           { COMMA }
   | "."                           { DOT }
   | identifier as id              {
-      try Hashtbl.find lexicon id ()
+      try Hashtbl.find lexicon id
       with Not_found -> NAME id }
   | eof                           { EOF }
   | _                             { failwith "Lexer error" }
