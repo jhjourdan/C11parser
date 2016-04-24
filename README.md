@@ -1,7 +1,7 @@
 C11parser
 =========
 
-### A correct C11 parser written using Menhir and OCaml
+##### A correct C11 parser written using Menhir and OCaml
 
 The operation and design of this parser are described in detail in the
 following journal paper (in process of review for publication):
