@@ -14,6 +14,7 @@
   $ $TESTDIR/../parse < $TESTDIR/struct-recursion.c
   $ $TESTDIR/../parse < $TESTDIR/types.c
   $ $TESTDIR/../parse < $TESTDIR/local_typedef.c
+  $ $TESTDIR/../parse < $TESTDIR/declaration_ambiguity.c
   $ $TESTDIR/../parse < $TESTDIR/declarator_visibility.c
   $ $TESTDIR/../parse < $TESTDIR/enum_shadows_typedef.c
   $ $TESTDIR/../parse < $TESTDIR/enum_constant_visibility.c
@@ -56,6 +57,7 @@ SHOULD FAIL (does not because we do not have a semantic analysis):
   */tests/dangling_else_lookahead.c (glob)
   */tests/dangling_else_lookahead.if.c (glob)
   */tests/dangling_else_misleading.c (glob)
+  */tests/declaration_ambiguity.c (glob)
   */tests/declarator_visibility.c (glob)
   */tests/declarators.c (glob)
   */tests/designator.c (glob)
