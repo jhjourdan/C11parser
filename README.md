@@ -12,8 +12,6 @@ following journal paper (in process of review for publication):
   2016
 </quote>
 
-What is it
-
 How to use the parser?
 ----------------------
 
