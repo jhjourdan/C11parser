@@ -6,11 +6,9 @@ C11parser
 The operation and design of this parser are described in detail in the
 following journal paper (in process of review for publication):
 
-<quote>
-  A correct LR parser for C11
-  Jacques-Henri Jourdan and François Pottier
-  2016
-</quote>
+> A correct LR parser for C11
+> Jacques-Henri Jourdan and François Pottier
+> 2016
 
 How to use the parser?
 ----------------------
