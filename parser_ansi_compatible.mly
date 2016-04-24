@@ -1,6 +1,7 @@
 /* **********************************************************************/
 /*                                                                      */
-/*          Jacques-Henri Jourdan, INRIA Paris-Rocquencourt             */
+/*          Jacques-Henri Jourdan, INRIA Paris                          */
+/*          François Pottier, INRIA Paris                               */
 /*                                                                      */
 /*  Copyright Institut National de Recherche en Informatique et en      */
 /*  Automatique.  All rights reserved.  This file is distributed        */

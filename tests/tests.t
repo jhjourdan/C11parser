@@ -28,7 +28,7 @@
   $ $TESTDIR/../parse < $TESTDIR/function_parameter_scope_extends.c
   $ $TESTDIR/../parse < $TESTDIR/dangling_else.c
 SHOULD FAIL:
-  $ $TESTDIR/../parse < $TESTDIR/dangling_else_misleading.c
+  $ $TESTDIR/../parse < $TESTDIR/dangling_else_misleading.fail.c
   Fatal error: exception Parser.Error
   [2]
   $ $TESTDIR/../parse < $TESTDIR/dangling_else_lookahead.c
@@ -56,7 +56,7 @@ SHOULD FAIL (does not because we do not have a semantic analysis):
   */tests/dangling_else.c (glob)
   */tests/dangling_else_lookahead.c (glob)
   */tests/dangling_else_lookahead.if.c (glob)
-  */tests/dangling_else_misleading.c (glob)
+  */tests/dangling_else_misleading.fail.c (glob)
   */tests/declaration_ambiguity.c (glob)
   */tests/declarator_visibility.c (glob)
   */tests/declarators.c (glob)
