@@ -1,4 +1,4 @@
-// dangling_else_misleading.c
+// dangling_else_misleading.fail.c
 typedef int T;
 void f(void) {
   if(1)
