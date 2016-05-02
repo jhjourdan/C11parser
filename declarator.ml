@@ -63,5 +63,8 @@ let reinstall_function_context d =
       restore_context ctx;
       declare_varname d.identifier
   | _ ->
-      (* This should not happen. *)
+      (* This should not happen. It would mean that we have encountered
+         a declarator that is not a function declarator yet is followed
+         by [declaration_list? compound_statement]. An error can be
+         reported if this happens. *)
       ()
