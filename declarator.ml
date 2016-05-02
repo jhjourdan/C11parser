@@ -19,6 +19,8 @@ open Context
    function declarator, we save a snapshot of the context at the END
    of the parameter-type-list. *)
 
+(* K&R function declarators are considered part of "other" declarators. *)
+
 type declarator_kind =
 | DeclaratorIdentifier
 | DeclaratorFunction of context
@@ -63,8 +65,9 @@ let reinstall_function_context d =
       restore_context ctx;
       declare_varname d.identifier
   | _ ->
-      (* This should not happen. It would mean that we have encountered
-         a declarator that is not a function declarator yet is followed
-         by [declaration_list? compound_statement]. An error can be
-         reported if this happens. *)
+      (* If we are here, then we have encountered a declarator that is
+         not a function declarator yet is followed by (the first symbol
+         of) [declaration_list? compound_statement]. Either this is a
+         K&R function declarator (in which case we should do nothing)
+         or this is an error. *)
       ()
