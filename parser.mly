@@ -684,7 +684,7 @@ external_declaration:
 
 function_definition1:
 | declaration_specifiers d = declarator_varname
-    { let ctx = save_context() in
+    { let ctx = save_context () in
       reinstall_function_context d;
       ctx }
 
