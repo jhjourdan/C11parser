@@ -17,8 +17,8 @@
 MENHIR := menhir --no-stdlib --unused-token IMAGINARY -lg 1 -la 1 -v
 
 all:
-	ocamlbuild -menhir "$(MENHIR)" lexer.native
-	mv lexer.native parse
+	ocamlbuild -menhir "$(MENHIR)" main.native
+	mv main.native parse
 
 test: all
 	cram tests/tests.t

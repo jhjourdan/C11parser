@@ -276,7 +276,9 @@ and singleline_comment = parse
 
 {
 
-  (* This is the main entry point to the lexer. *)
+  (* This lexer chooses between [inital] or [initial_linebegin],
+     depending on whether we are at the beginning of the line or
+     not. *)
 
   let lexer : lexbuf -> token =
     fun lexbuf ->
@@ -285,14 +287,27 @@ and singleline_comment = parse
       else
         initial lexbuf
 
-  (* [lexer buffer] is a new lexer, which wraps [lexer], and
-     duplicates identifier tokens into NAME and VARIABLE/TYPE. *)
-  (* TEMPORARY needs more precise comments *)
+  (* In the following, we define a new lexer, which wraps [lexer], and
+     does the two following modifications in the token stream:
+       - It duplicates identifier tokens into NAME and VARIABLE/TYPE.
 
+       - When [atomic_strict_syntax] is [true] and an openning
+         parenthesis is immediately follows an [_Atomic] keyword, it
+         replaces the openning parenthesis by a special token, so that
+         it has to be interpreted by the parser as an atomic type
+         specifier.
+   *)
+
+  (* This second lexer is implemented using a 3-states state
+     machine. The states are described by the [lexer_state] type. *)
   type lexer_state =
-    | SRegular
-    | SAtomic
-    | SIdent of string
+    | SRegular          (* Nothing to recall from the previous tokens. *)
+    | SAtomic           (* The previous token was [_Atomic], so a following
+                           opening parenthesis needs special care. *)
+    | SIdent of string  (* We have seen an identifier: we have just
+                           emitted a [NAME], and we need to emit
+                           either [VARIABLE] or [TYPE], depending on
+                           the kind of the identifier. *)
 
   let lexer : lexbuf -> token =
     let st = ref SRegular in
@@ -322,12 +337,5 @@ and singleline_comment = parse
           | _, _ ->
               st := SRegular;
               token
-
-  let _ =
-    let lexbuf = Lexing.from_channel stdin in
-    if allow_implicit_int then
-      Parser_ansi_compatible.translation_unit_file lexer lexbuf
-    else
-      Parser.translation_unit_file lexer lexbuf
 
 }
