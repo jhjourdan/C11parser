@@ -2,4 +2,3 @@ parse
 _build
 parser.output
 parser.tab.c
-parser.y
