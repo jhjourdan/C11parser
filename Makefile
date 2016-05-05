@@ -1,16 +1,12 @@
-# ######################################################################
-#                                                                      #
-#          Jacques-Henri Jourdan, INRIA Paris-Rocquencourt             #
-#          Francois Pottier, INRIA Paris-Rocquencourt                  #
-#                                                                      #
-#  Copyright Institut National de Recherche en Informatique et en      #
-#  Automatique.  All rights reserved.  This file is distributed        #
-#  under the terms of the GNU General Public License as published by   #
-#  the Free Software Foundation, either version 2 of the License, or   #
-#  (at your option) any later version.  This file is also distributed  #
-#  under the terms of the INRIA Non-Commercial License Agreement.      #
-#                                                                      #
-# ######################################################################
+##########################################################################
+#                    Jacques-Henri Jourdan, Inria Paris                  #
+#                      François Pottier, Inria Paris                     #
+#                                                                        #
+#  Copyright Inria. All rights reserved. This file is distributed under  #
+#  the terms of the GNU General Public License as published by the Free  #
+#  Software Foundation, either version 2 of the License, or (at your     #
+#  option) any later version.                                            #
+##########################################################################
 
 .PHONY: all test clean realclean
 

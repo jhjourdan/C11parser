@@ -1,16 +1,12 @@
-(* **********************************************************************)
-(*                                                                      *)
-(*          Jacques-Henri Jourdan, INRIA Paris                          *)
-(*          François Pottier, INRIA Paris                               *)
-(*                                                                      *)
-(*  Copyright Institut National de Recherche en Informatique et en      *)
-(*  Automatique.  All rights reserved.  This file is distributed        *)
-(*  under the terms of the GNU General Public License as published by   *)
-(*  the Free Software Foundation, either version 2 of the License, or   *)
-(*  (at your option) any later version.  This file is also distributed  *)
-(*  under the terms of the INRIA Non-Commercial License Agreement.      *)
-(*                                                                      *)
-(* **********************************************************************)
+(**************************************************************************)
+(*                    Jacques-Henri Jourdan, Inria Paris                  *)
+(*                      François Pottier, Inria Paris                     *)
+(*                                                                        *)
+(*  Copyright Inria. All rights reserved. This file is distributed under  *)
+(*  the terms of the GNU General Public License as published by the Free  *)
+(*  Software Foundation, either version 2 of the License, or (at your     *)
+(*  option) any later version.                                            *)
+(**************************************************************************)
 
 module StringSet = Set.Make(String)
 
@@ -22,7 +18,7 @@ let current =
 let declare_typedefname id =
   current := StringSet.add id !current
 
-(* This declares [id] as a variable (hence, un-declares it as a typedef name). *)
+(* This declares [id] as a variable (hence un-declares it as a typedef name). *)
 let declare_varname id =
   current := StringSet.remove id !current
 
