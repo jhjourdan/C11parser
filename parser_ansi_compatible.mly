@@ -170,7 +170,7 @@ scoped(X):
 
 c99_scoped(X):
 | ctx = save_context x = X
-    { if c99_scoping then restore_context ctx;
+    { if !c99_scoping then restore_context ctx;
       x }
 
 declare_varname(nt):

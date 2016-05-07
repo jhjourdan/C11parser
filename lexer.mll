@@ -327,7 +327,7 @@ and singleline_comment = parse
               ATOMIC_LPAREN
 
           | _, ATOMIC ->
-              st := (if atomic_strict_syntax then SAtomic else SRegular);
+              st := (if !atomic_strict_syntax then SAtomic else SRegular);
               token
 
           | _, _ ->

@@ -14,7 +14,6 @@
    modify the grammar, you should check that this is still the case. *)
 
 %{
-  open Options
   open Context
   open Declarator
 %}
@@ -156,11 +155,6 @@ save_context:
 scoped(X):
 | ctx = save_context x = X
     { restore_context ctx;
-      x }
-
-c99_scoped(X):
-| ctx = save_context x = X
-    { if c99_scoping then restore_context ctx;
       x }
 
 (* [declarator_varname] and [declarator_typedefname] are like [declarator].
@@ -620,8 +614,8 @@ statement:
 | labeled_statement
 | (* scope: block *) scoped(compound_statement)
 | expression_statement
-| (* scope: block *) c99_scoped(selection_statement)
-| (* scope: block *) c99_scoped(iteration_statement)
+| (* scope: block *) scoped(selection_statement)
+| (* scope: block *) scoped(iteration_statement)
 | jump_statement
     {}
 
@@ -649,16 +643,16 @@ expression_statement:
     {}
 
 selection_statement:
-| IF LPAREN expression RPAREN (* scope: block *) c99_scoped(statement) ELSE (* scope: block *) c99_scoped(statement)
-| IF LPAREN expression RPAREN (* scope: block *) c99_scoped(statement) %prec below_ELSE
-| SWITCH LPAREN expression RPAREN (* scope: block *) c99_scoped(statement)
+| IF LPAREN expression RPAREN (* scope: block *) scoped(statement) ELSE (* scope: block *) scoped(statement)
+| IF LPAREN expression RPAREN (* scope: block *) scoped(statement) %prec below_ELSE
+| SWITCH LPAREN expression RPAREN (* scope: block *) scoped(statement)
     {}
 
 iteration_statement:
-| WHILE LPAREN expression RPAREN (* scope: block *) c99_scoped(statement)
-| DO (* scope: block *) c99_scoped(statement) WHILE LPAREN expression RPAREN SEMICOLON
-| FOR LPAREN expression? SEMICOLON expression? SEMICOLON expression? RPAREN (* scope: block *) c99_scoped(statement)
-| FOR LPAREN declaration expression? SEMICOLON expression? RPAREN (* scope: block *) c99_scoped(statement)
+| WHILE LPAREN expression RPAREN (* scope: block *) scoped(statement)
+| DO (* scope: block *) scoped(statement) WHILE LPAREN expression RPAREN SEMICOLON
+| FOR LPAREN expression? SEMICOLON expression? SEMICOLON expression? RPAREN (* scope: block *) scoped(statement)
+| FOR LPAREN declaration expression? SEMICOLON expression? RPAREN (* scope: block *) scoped(statement)
     {}
 
 jump_statement:

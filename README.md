@@ -18,9 +18,33 @@ ocamlbuild. In order to build it, you can just type `make`.
 
 The executable that is produced takes a preprocessed C file in its
 standard input and raises an exception in the case of a parse
-error. Some configuration options are provided in the `option.ml`
-file. In particular, the parser is configurable to run in C89
-compliant mode (which is incompatible with the C99/C11 mode).
+error.
+
+The following command-line options are available:
+  -std {c89|c90|c99|c11}
+
+    Sets which grammar to use.
+
+    "c89" and "c90" tells the parser to use the old grammar, where
+    declaration were not required to have a type specifier, in which
+    case "int" was used (it still recognizes C99 and C11 constructs).
+
+    "c99" and "c11" use the new, simpler grammar: declarations are
+    required to have a type specifier, and the scoping rules are
+    different.
+
+  -c99-scoping
+
+    Use the C99/C11 scoping rules even though the old C89/C90 grammar
+    is used. This is always set when using the new grammar.
+
+  -atomic-permissive-syntax
+
+    The C11 standard forbids the use of an opening parenthesis
+    immediatelly following an atomic type qualifier. This is intended
+    to avoid a possible ambiguity with _Atomic used in a type
+    specifier. This parser disambiguates this apparent conflict so
+    that this restriction can be lifted safely.
 
 If you want to use this parser in a C front-end, you should fill the
 semantic actions of .mly files with your own code for building your
