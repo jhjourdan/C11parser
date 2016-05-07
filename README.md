@@ -21,24 +21,24 @@ standard input and raises an exception in the case of a parse
 error.
 
 The following command-line options are available:
-  -std {c89|c90|c99|c11}
+  - `-std {c89|c90|c99|c11}`
 
     Sets which grammar to use.
 
-    "c89" and "c90" tells the parser to use the old grammar, where
+    `c89` and `c90` tells the parser to use the old grammar, where
     declaration were not required to have a type specifier, in which
     case "int" was used (it still recognizes C99 and C11 constructs).
 
-    "c99" and "c11" use the new, simpler grammar: declarations are
+    `c99" and `c11` use the new, simpler grammar: declarations are
     required to have a type specifier, and the scoping rules are
     different.
 
-  -c99-scoping
+  - `-c99-scoping`
 
     Use the C99/C11 scoping rules even though the old C89/C90 grammar
     is used. This is always set when using the new grammar.
 
-  -atomic-permissive-syntax
+  - `-atomic-permissive-syntax`
 
     The C11 standard forbids the use of an opening parenthesis
     immediatelly following an atomic type qualifier. This is intended
