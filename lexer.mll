@@ -283,27 +283,30 @@ and singleline_comment = parse
       else
         initial lexbuf
 
-  (* In the following, we define a new lexer, which wraps [lexer], and
-     does the two following modifications in the token stream:
-       - It duplicates identifier tokens into NAME and VARIABLE/TYPE.
+  (* In the following, we define a new lexer, which wraps [lexer], and applies
+     the following two transformations to the token stream:
 
-       - When [atomic_strict_syntax] is [true] and an openning
-         parenthesis is immediately follows an [_Atomic] keyword, it
-         replaces the openning parenthesis by a special token, so that
-         it has to be interpreted by the parser as an atomic type
-         specifier.
-   *)
+     - A [NAME] token is replaced with a sequence of either [NAME VARIABLE] or
+       [NAME TYPE]. The decision is made via a call to [Context.is_typedefname].
+       The call takes place only when the second element of the sequence is
+       demanded.
 
-  (* This second lexer is implemented using a 3-states state
-     machine. The states are described by the [lexer_state] type. *)
+     - When [Options.atomic_strict_syntax] is [true] and an opening parenthesis
+       [LPAREN] follows an [ATOMIC] keyword, the parenthesis is replaced by a
+       special token, [ATOMIC_LPAREN], so as to allow the parser to treat it
+       specially. *)
+
+  (* This second lexer is implemented using a 3-state state machine, whose
+     states are as follows. *)
+
   type lexer_state =
     | SRegular          (* Nothing to recall from the previous tokens. *)
-    | SAtomic           (* The previous token was [_Atomic], so a following
-                           opening parenthesis needs special care. *)
+    | SAtomic           (* The previous token was [ATOMIC]. If an opening
+                           parenthesis follows, then it needs special care. *)
     | SIdent of string  (* We have seen an identifier: we have just
-                           emitted a [NAME], and we need to emit
+                           emitted a [NAME] token. The next token will be
                            either [VARIABLE] or [TYPE], depending on
-                           the kind of the identifier. *)
+                           what kind of identifier this is. *)
 
   let lexer : lexbuf -> token =
     let st = ref SRegular in
