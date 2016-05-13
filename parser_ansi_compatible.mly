@@ -100,14 +100,14 @@ ne_list_suff(A, suff):
 | A x = list_suff(A, suff)
     { x }
 
-(* A list of A's and B's that contains exactly one A, with suffix suff: *)
+(* A list of A's and B's that contains exactly one A, with suffix: *)
 
 list_eq1(A, B, suff):
 | A x = list_suff(B, suff)
 | B x = list_eq1(A, B, suff)
     { x }
 
-(* A list of A's and B's that contains at least one A: *)
+(* A list of A's and B's that contains at least one A, with suffix: *)
 
 list_ge1(A, B, suff):
 | A x = list_suff(B, suff)
@@ -115,7 +115,7 @@ list_ge1(A, B, suff):
 | B x = list_ge1(A, B, suff)
     { x }
 
-(* A list of A's, B's and C's that contains exactly one A and exactly one B: *)
+(* A list of A's, B's and C's that contains exactly one A and exactly one B, with suffix: *)
 
 list_eq1_eq1(A, B, C, suff):
 | A list_eq1(B, C, suff)
@@ -123,7 +123,7 @@ list_eq1_eq1(A, B, C, suff):
 | C list_eq1_eq1(A, B, C, suff)
     {}
 
-(* A list of A's, B's and C's that contains exactly one A and at least one B: *)
+(* A list of A's, B's and C's that contains exactly one A and at least one B, with suffix: *)
 
 list_eq1_ge1(A, B, C, suff):
 | A list_ge1(B, C, suff)
@@ -173,12 +173,16 @@ c99_scoped(X):
     { if !c99_scoping then restore_context ctx;
       x }
 
-declare_varname(nt):
-| d = nt
+(* [declarator_varname] and [declarator_typedefname] are like [declarator].
+   In addition, they have the side effect of introducing the declared identifier
+   as a new variable or typedef name in the current context. *)
+
+declarator_varname(ident):
+| d = declarator(ident)
     { declare_varname (identifier d); d }
 
-declare_typedefname(nt):
-| d = nt
+declarator_typedefname(ident):
+| d = declarator(ident)
     { declare_typedefname (identifier d); d }
 
 (* Actual grammar *)
@@ -343,15 +347,28 @@ constant_expression:
 | conditional_expression
     {}
 
+(* We distinguish four kinds of declarations, depending on:
+   - whether they have a type specifier or use the "implicit int" rule
+   - whether they are declaring typedef names or normal variables
+
+  Moreover, at the end of the declaration specifiers list, it is not
+  always to determine, using only the lookahead token, whether the
+  list is finished or not. Therefore, we must avoid a reduction to
+  happen at the end of the list (so that the multiple possibilities
+  can be tried in parallel).
+
+  To this end, we define non-terminals of lists of declaration
+  specifiers, taking a suffix as parameter (the suffix being either
+  empty when the declarator list is empty or being the first
+  declarator). Then, [pref_init_declarator_list_opt] is a (possibly
+  empty) list of init-declarators, whose first declarator is deeply
+  embedded as a suffix of the declaration specifiers list.
+ *)
 declaration:
-| declaration_specifiers(empty)                                                                      SEMICOLON
-| declaration_specifiers_typedef(empty)                                                              SEMICOLON
-| pref_init_declarator_list(declaration_specifiers,         declare_varname,     general_identifier) SEMICOLON
-| pref_init_declarator_list(declaration_specifiers_typedef, declare_typedefname, general_identifier) SEMICOLON
-| declaration_specifiers_nots(empty)                                                                 SEMICOLON
-| declaration_specifiers_nots_typedef(empty)                                                         SEMICOLON
-| pref_init_declarator_list(declaration_specifiers_nots, declare_varname, var_name)                  SEMICOLON
-| pref_init_declarator_list(declaration_specifiers_nots_typedef, declare_typedefname, var_name)      SEMICOLON
+| pref_init_declarator_list_opt(declaration_specifiers,         declarator_varname(general_identifier))     SEMICOLON
+| pref_init_declarator_list_opt(declaration_specifiers_typedef, declarator_typedefname(general_identifier)) SEMICOLON
+| pref_init_declarator_list_opt(declaration_specifiers_nots,         declarator_varname(var_name))          SEMICOLON
+| pref_init_declarator_list_opt(declaration_specifiers_nots_typedef, declarator_typedefname(var_name))      SEMICOLON
 | static_assert_declaration
     {}
 
@@ -410,15 +427,20 @@ declaration_specifiers_nots_typedef(suff):
 | list_eq1(TYPEDEF, declaration_specifier, suff)
     {}
 
-pref_init_declarator_list_noinit(pref, declare, ident):
-| pref(declare(declarator(ident)))
-| pref_init_declarator_list(pref, declare, ident) COMMA declare(declarator(ident))
+pref_init_declarator_list(pref, declarator):
+| pref(init_declarator(declarator))
+| pref_init_declarator_list(pref, declarator) COMMA init_declarator(declarator)
     {}
 
-pref_init_declarator_list(pref, declare, ident):
-| pref_init_declarator_list_noinit(pref, declare, ident)
-| pref_init_declarator_list_noinit(pref, declare, ident) EQ c_initializer
-    {}
+pref_init_declarator_list_opt(pref, declarator):
+| pref(empty)
+| pref_init_declarator_list(pref, declarator)
+  {}
+
+init_declarator(declarator):
+| declarator
+| declarator EQ c_initializer
+  {}
 
 (* [storage_class_specifier] corresponds to storage-class-specifier in the
    C11 standard, deprived of TYPEDEF (which receives special treatment). *)
@@ -432,6 +454,7 @@ storage_class_specifier:
     {}
 
 (* A type specifier which can be associated with others. *)
+
 type_specifier_nonunique:
 | CHAR
 | SHORT
@@ -445,6 +468,7 @@ type_specifier_nonunique:
     {}
 
 (* A type specifier which cannot appear with other type specifiers. *)
+
 type_specifier_unique:
 | VOID
 | BOOL
@@ -479,6 +503,7 @@ struct_declaration:
 
 (* As in the standard, except it also encodes the constraint described
    in the comment above [declaration_specifiers]. *)
+
 specifier_qualifier_list(suff):
 | list_eq1(type_specifier_unique, type_qualifier, suff)
 | list_ge1(type_specifier_nonunique, type_qualifier, suff)
@@ -535,15 +560,17 @@ alignment_specifier:
 | ALIGNAS LPAREN constant_expression RPAREN
     {}
 
-(* The semantic action returned by [declarator] is a pair of the
-   identifier being defined and a value containing the context stack
-   that has to be restored if entering the body of the function being
-   defined, if so. *)
 declarator(ident):
 | d = direct_declarator(ident)
     { d }
 | pointer d = direct_declarator(ident)
     { other_declarator d }
+
+(* The occurrences of [save_context] inside [direct_declarator] and
+   [direct_abstract_declarator] seem to serve no purpose. In fact, they are
+   required in order to avoid certain conflicts. In other words, we must save
+   the context at this point because the LR automaton is exploring multiple
+   avenues in parallel and some of them do require saving the context. *)
 
 direct_declarator(ident):
 | i = ident
@@ -579,8 +606,8 @@ parameter_list:
     {}
 
 parameter_declaration:
-| declaration_specifiers(declare_varname(declarator(general_identifier)))
-| declaration_specifiers_nots(declare_varname(declarator(var_name)))
+| declaration_specifiers(declarator_varname(general_identifier))
+| declaration_specifiers_nots(declarator_varname(var_name))
 | declaration_specifiers(abstract_declarator?)
     {}
 
@@ -636,10 +663,10 @@ static_assert_declaration:
 
 statement:
 | labeled_statement
-| scoped(compound_statement)
+| (* scope: block *) scoped(compound_statement)
 | expression_statement
-| c99_scoped(selection_statement)
-| c99_scoped(iteration_statement)
+| (* scope: block *) c99_scoped(selection_statement)
+| (* scope: block *) c99_scoped(iteration_statement)
 | jump_statement
     {}
 
@@ -667,16 +694,16 @@ expression_statement:
     {}
 
 selection_statement:
-| IF LPAREN expression RPAREN c99_scoped(statement) ELSE c99_scoped(statement)
-| IF LPAREN expression RPAREN c99_scoped(statement) %prec below_ELSE
-| SWITCH LPAREN expression RPAREN c99_scoped(statement)
+| IF LPAREN expression RPAREN (* scope: block *) c99_scoped(statement) ELSE (* scope: block *) c99_scoped(statement)
+| IF LPAREN expression RPAREN (* scope: block *) c99_scoped(statement) %prec below_ELSE
+| SWITCH LPAREN expression RPAREN (* scope: block *) c99_scoped(statement)
     {}
 
 iteration_statement:
-| WHILE LPAREN expression RPAREN c99_scoped(statement)
-| DO c99_scoped(statement) WHILE LPAREN expression RPAREN SEMICOLON
-| FOR LPAREN expression? SEMICOLON expression? SEMICOLON expression? RPAREN c99_scoped(statement)
-| FOR LPAREN declaration expression? SEMICOLON expression? RPAREN c99_scoped(statement)
+| WHILE LPAREN expression RPAREN (* scope: block *) c99_scoped(statement)
+| DO (* scope: block *) c99_scoped(statement) WHILE LPAREN expression RPAREN SEMICOLON
+| FOR LPAREN expression? SEMICOLON expression? SEMICOLON expression? RPAREN (* scope: block *) c99_scoped(statement)
+| FOR LPAREN declaration expression? SEMICOLON expression? RPAREN (* scope: block *) c99_scoped(statement)
     {}
 
 jump_statement:
@@ -697,9 +724,9 @@ external_declaration:
     {}
 
 function_definition1:
-| d = declaration_specifiers(declare_varname(declarator(general_identifier)))
-| d = declaration_specifiers_nots(declare_varname(declarator(var_name)))
-| d = declare_varname(declarator(var_name))
+| d = declaration_specifiers(declarator_varname(general_identifier))
+| d = declaration_specifiers_nots(declarator_varname(var_name))
+| d = declarator_varname(var_name)
     { let ctx = save_context () in
       reinstall_function_context d;
       ctx }
