@@ -41,7 +41,7 @@ The following command-line options are available:
   - `-atomic-permissive-syntax`
 
     The C11 standard forbids the use of an opening parenthesis
-    immediatelly following an atomic type qualifier. This is intended
+    immediately following an atomic type qualifier. This is intended
     to avoid a possible ambiguity with _Atomic used in a type
     specifier. This parser disambiguates this apparent conflict so
     that this restriction can be lifted safely.
@@ -62,5 +62,5 @@ We provide, in the tests directory, a series of tests that are
 particularly difficult to handle in a correct C parser. They are all
 valid C11 fragments, except for:
   - The files whose name finishes with .fail.c
-  - `atomic_parenthesis.c`, which represent an unecessary restriction in
+  - `atomic_parenthesis.c`, which represent an unnecessary restriction in
     the syntax presented in the C11 standard.
