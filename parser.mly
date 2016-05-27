@@ -533,7 +533,7 @@ direct_declarator:
 | d = direct_declarator LBRACK type_qualifier_list STATIC assignment_expression RBRACK
 | d = direct_declarator LBRACK type_qualifier_list? STAR RBRACK
     { other_declarator d }
-| d = direct_declarator LPAREN (* scope: function prototype *) ctx = scoped(parameter_type_list) RPAREN
+| d = direct_declarator LPAREN ctx = scoped(parameter_type_list) RPAREN
     { function_declarator d ctx }
 | d = direct_declarator LPAREN save_context identifier_list? RPAREN
     { other_declarator d }
@@ -580,7 +580,7 @@ direct_abstract_declarator:
 | direct_abstract_declarator? LBRACK STATIC type_qualifier_list? assignment_expression RBRACK
 | direct_abstract_declarator? LBRACK type_qualifier_list STATIC assignment_expression RBRACK
 | direct_abstract_declarator? LBRACK STAR RBRACK
-| ioption(direct_abstract_declarator) LPAREN (* scope: function prototype *) scoped(parameter_type_list)? RPAREN
+| ioption(direct_abstract_declarator) LPAREN scoped(parameter_type_list)? RPAREN
     {}
 
 c_initializer:
@@ -612,10 +612,10 @@ static_assert_declaration:
 
 statement:
 | labeled_statement
-| (* scope: block *) scoped(compound_statement)
+| scoped(compound_statement)
 | expression_statement
-| (* scope: block *) scoped(selection_statement)
-| (* scope: block *) scoped(iteration_statement)
+| scoped(selection_statement)
+| scoped(iteration_statement)
 | jump_statement
     {}
 
@@ -643,16 +643,16 @@ expression_statement:
     {}
 
 selection_statement:
-| IF LPAREN expression RPAREN (* scope: block *) scoped(statement) ELSE (* scope: block *) scoped(statement)
-| IF LPAREN expression RPAREN (* scope: block *) scoped(statement) %prec below_ELSE
-| SWITCH LPAREN expression RPAREN (* scope: block *) scoped(statement)
+| IF LPAREN expression RPAREN scoped(statement) ELSE scoped(statement)
+| IF LPAREN expression RPAREN scoped(statement) %prec below_ELSE
+| SWITCH LPAREN expression RPAREN scoped(statement)
     {}
 
 iteration_statement:
-| WHILE LPAREN expression RPAREN (* scope: block *) scoped(statement)
-| DO (* scope: block *) scoped(statement) WHILE LPAREN expression RPAREN SEMICOLON
-| FOR LPAREN expression? SEMICOLON expression? SEMICOLON expression? RPAREN (* scope: block *) scoped(statement)
-| FOR LPAREN declaration expression? SEMICOLON expression? RPAREN (* scope: block *) scoped(statement)
+| WHILE LPAREN expression RPAREN scoped(statement)
+| DO scoped(statement) WHILE LPAREN expression RPAREN SEMICOLON
+| FOR LPAREN expression? SEMICOLON expression? SEMICOLON expression? RPAREN scoped(statement)
+| FOR LPAREN declaration expression? SEMICOLON expression? RPAREN scoped(statement)
     {}
 
 jump_statement:
