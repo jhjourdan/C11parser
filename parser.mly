@@ -38,23 +38,20 @@
 %type<string> typedef_name var_name general_identifier enumeration_constant
 %type<declarator> declarator direct_declarator
 
-(* There is a reduce/reduce conflict in the grammar. It corresponds to
-   the conflict in the second declaration in the following snippet:
+(* There is a reduce/reduce conflict in the grammar. It corresponds to the
+   conflict in the second declaration in the following snippet:
 
      typedef int T;
      int f(int(T));
 
-   It is specified by 6.7.6.3 11: 'T' should be taken as the type of
-   parameter of the anonymous function taken as parameter by f (thus,
+   It is specified by 6.7.6.3 11: 'T' should be taken as the type of the
+   parameter of the anonymous function taken as a parameter by f (thus,
    f has type (T -> int) -> int).
 
-   The reduce/reduce conflict is solved by letting menhir reduce the
-   production appearing first in this file. This is the reason why we
-   have the [typedef_name_spec] proxy: it is here just to make sure the
-   conflicting production appears before the other (which concerns
-   [general_identifier]).
-
- *)
+   The reduce/reduce conflict is solved by letting menhir reduce the production
+   appearing first in this file. This is the reason why we have the
+   [typedef_name_spec] proxy: it is here just to make sure the conflicting
+   production appears before the other (which concerns [general_identifier]). *)
 
 (* These precedence declarations solve the dangling else conflict. *)
 %nonassoc below_ELSE
@@ -66,10 +63,10 @@
 
 (* Helpers *)
 
-(* Note that, by convention, [X?] is syntactic sugar for [option(X)].
-   [option(X)] represents a choice between nothing and [X].
+(* [option(X)] represents a choice between nothing and [X].
    [ioption(X)] is the same thing, but is inlined at its use site,
-   which in some cases is necessary in order to avoid a conflict. *)
+   which in some cases is necessary in order to avoid a conflict.
+   By convention, [X?] is syntactic sugar for [option(X)]. *)
 
 %inline ioption(X):
 | /* nothing */
@@ -80,9 +77,7 @@ option(X):
 | o = ioption(X)
     { o }
 
-(* Note that, by convention, [X*] is syntactic sugar for [list(X)],
-   so this definition of [list] is actually used, even though the
-   word [list] does not appear in the rest of this file. *)
+(* By convention, [X*] is syntactic sugar for [list(X)]. *)
 
 list(X):
 | /* nothing */
@@ -121,27 +116,25 @@ list_eq1_ge1(A, B, C):
 | C list_eq1_ge1(A, B, C)
     {}
 
-(* The kind of an identifier should not be determined when looking
-   ahead, because the context may not be up to date. For this reason,
-   when reading an identifier, the lexer emits two tokens: the first
-   one (NAME) is eaten as a lookahead token, the second one is the
-   actual identifier.
-*)
+(* Upon finding an identifier, the lexer emits two tokens. The first token,
+   [NAME], indicates that a name has been found; the second token, either [TYPE]
+   or [VARIABLE], tells what kind of name this is. The classification is
+   performed only when the second token is demanded by the parser. *)
 
 typedef_name:
 | i = NAME TYPE
     { i }
 
-(* We need [typedef_name_spec] to be declared before [general_identifier],
-   so that the reduce/reduce conflict is solved the right way.  *)
+var_name:
+| i = NAME VARIABLE
+    { i }
+
+(* [typedef_name_spec] must be declared before [general_identifier], so that the
+   reduce/reduce conflict is solved the right way. *)
 
 typedef_name_spec:
 | typedef_name
     {}
-
-var_name:
-| i = NAME VARIABLE
-    { i }
 
 general_identifier:
 | i = typedef_name
@@ -154,12 +147,11 @@ save_context:
 
 scoped(X):
 | ctx = save_context x = X
-    { restore_context ctx;
-      x }
+    { restore_context ctx; x }
 
-(* [declarator_varname] and [declarator_typedefname] are like [declarator].
-   In addition, they have the side effect of introducing the declared identifier
-   as a new variable or typedef name in the current context. *)
+(* [declarator_varname] and [declarator_typedefname] are like [declarator]. In
+   addition, they have the side effect of introducing the declared identifier as
+   a new variable or typedef name in the current context. *)
 
 declarator_varname:
 | d = declarator
@@ -331,10 +323,10 @@ constant_expression:
 | conditional_expression
     {}
 
-(* We separate two kinds of declarations: the typedef declaration and
-   the normal declarations. This makes possible to distinguish /in the
-   grammar/ whether a declaration should add a typename or a varname
-   in the context. *)
+(* We separate type declarations, which contain an occurrence of [TYPEDEF], and
+   normal declarations, which do not. This makes it possible to distinguish /in
+   the grammar/ whether a declaration introduces typedef names or variables in
+   the context. *)
 
 declaration:
 | declaration_specifiers         init_declarator_list(declarator_varname)?     SEMICOLON
@@ -342,8 +334,8 @@ declaration:
 | static_assert_declaration
     {}
 
-(* [declaration_specifier] corresponds to one declaration specifier
-   in the C11 standard, deprived of TYPEDEF and of type specifiers. *)
+(* [declaration_specifier] corresponds to one declaration specifier in the C11
+   standard, deprived of TYPEDEF and of type specifiers. *)
 
 declaration_specifier:
 | storage_class_specifier (* deprived of TYPEDEF *)
@@ -352,25 +344,24 @@ declaration_specifier:
 | alignment_specifier
     {}
 
-(* [declaration_specifiers] requires at least one type specifier to be
-   present, and, if a unique type specifier is present, then no other
-   type specifier is present. In other words, one should have either
-   at least one nonunique type specifier, or exactly one unique type
-   specifier.
+(* [declaration_specifiers] requires that at least one type specifier be
+   present, and, if a unique type specifier is present, then no other type
+   specifier be present. In other words, one should have either at least one
+   nonunique type specifier, or exactly one unique type specifier.
 
-   This is a weaker condition than 6.7.2 2. Encoding this condition
-   in the grammar is necessary to disambiguate the example in 6.7.7 6:
+   This is a weaker condition than 6.7.2 2. Encoding this condition in the
+   grammar is necessary to disambiguate the example in 6.7.7 6:
 
-   typedef signed int t;
-   struct tag {
+     typedef signed int t;
+     struct tag {
      unsigned t:4;
      const t:5;
-   };
+     };
 
    The first field is a named t, while the second is unnamed of type t.
 
-   [declaration_specifiers] forbids the [TYPEDEF] keyword.
-*)
+   [declaration_specifiers] forbids the [TYPEDEF] keyword. *)
+
 declaration_specifiers:
 | list_eq1(type_specifier_unique,    declaration_specifier)
 | list_ge1(type_specifier_nonunique, declaration_specifier)
@@ -378,6 +369,7 @@ declaration_specifiers:
 
 (* [declaration_specifiers_typedef] is analogous to [declaration_specifiers],
    but requires the [TYPEDEF] keyword to be present (exactly once). *)
+
 declaration_specifiers_typedef:
 | list_eq1_eq1(TYPEDEF, type_specifier_unique,    declaration_specifier)
 | list_eq1_ge1(TYPEDEF, type_specifier_nonunique, declaration_specifier)
@@ -397,7 +389,7 @@ init_declarator(declarator):
     {}
 
 (* [storage_class_specifier] corresponds to storage-class-specifier in the
-   C11 standard, deprived of TYPEDEF (which receives special treatment). *)
+   C11 standard, deprived of [TYPEDEF] (which receives special treatment). *)
 
 storage_class_specifier:
 | EXTERN
@@ -407,7 +399,7 @@ storage_class_specifier:
 | REGISTER
     {}
 
-(* A type specifier which can be associated with others. *)
+(* A type specifier which can appear together with other type specifiers. *)
 
 type_specifier_nonunique:
 | CHAR
@@ -421,7 +413,7 @@ type_specifier_nonunique:
 | COMPLEX
     {}
 
-(* A type specifier which cannot appear with other type specifiers. *)
+(* A type specifier which cannot appear together with other type specifiers. *)
 
 type_specifier_unique:
 | VOID
@@ -452,8 +444,8 @@ struct_declaration:
 | static_assert_declaration
     {}
 
-(* As in the standard, except it also encodes the constraint described
-   in the comment above [declaration_specifiers]. *)
+(* [specifier_qualifier_list] is as in the standard, except it also encodes the
+   same constraint as [declaration_specifiers] (see above). *)
 
 specifier_qualifier_list:
 | list_eq1(type_specifier_unique,    type_qualifier)
