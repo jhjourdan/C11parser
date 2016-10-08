@@ -41,7 +41,6 @@
 
 %type<context> save_context parameter_type_list function_definition1
 %type<string> typedef_name var_name general_identifier enumeration_constant
-%type<declarator> declarator direct_declarator
 
 (* There is a reduce/reduce conflict in the grammar. It corresponds to
    the conflict in the second declaration in the following snippet:
