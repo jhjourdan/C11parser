@@ -30,7 +30,7 @@
   $ $PARSECMD < $TESTDIR/dangling_else.c
 SHOULD FAIL:
   $ $PARSECMD < $TESTDIR/dangling_else_misleading.fail.c
-  Fatal error: exception Parser.Error
+  Fatal error: exception Parser.Basics.Error
   [2]
   $ $PARSECMD < $TESTDIR/dangling_else_lookahead.c
   $ $PARSECMD < $TESTDIR/dangling_else_lookahead.if.c
