@@ -161,7 +161,10 @@ declarator_typedefname:
 | d = declarator
     { declare_typedefname (identifier d); d }
 
-(* Actual grammar *)
+
+
+
+(* End of the helpers, and beginning of the grammar proper: *)
 
 primary_expression:
 | var_name
