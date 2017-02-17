@@ -260,6 +260,8 @@ relational_expression:
 | relational_expression relational_operator shift_expression
     {}
 
+
+
 equality_operator:
   EQEQ | NEQ {}
 
@@ -321,6 +323,7 @@ expression:
 | assignment_expression
 | expression COMMA assignment_expression
     {}
+
 
 constant_expression:
 | conditional_expression
@@ -447,6 +450,7 @@ struct_declaration:
 | static_assert_declaration
     {}
 
+
 (* [specifier_qualifier_list] is as in the standard, except it also encodes the
    same constraint as [declaration_specifiers] (see above). *)
 
@@ -497,8 +501,7 @@ type_qualifier:
     {}
 
 function_specifier:
-| INLINE
-| NORETURN
+  INLINE | NORETURN
     {}
 
 alignment_specifier:
@@ -568,6 +571,11 @@ abstract_declarator:
 | pointer
 | ioption(pointer) direct_abstract_declarator
     {}
+
+
+
+
+
 
 direct_abstract_declarator:
 | LPAREN save_context abstract_declarator RPAREN
