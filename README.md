@@ -29,7 +29,7 @@ The following command-line options are available:
     declaration were not required to have a type specifier, in which
     case "int" was used (it still recognizes C99 and C11 constructs).
 
-    `c99" and `c11` use the new, simpler grammar: declarations are
+    `c99` and `c11` use the new, simpler grammar: declarations are
     required to have a type specifier, and the scoping rules are
     different.
 
