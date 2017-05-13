@@ -62,7 +62,8 @@ let () =
       ("unsigned", UNSIGNED);
       ("void", VOID);
       ("volatile", VOLATILE);
-      ("while", WHILE)]
+      ("while", WHILE);
+      ("extension", EXTENSION)]
 
 let init _filename channel : Lexing.lexbuf =
   Lexing.from_channel channel

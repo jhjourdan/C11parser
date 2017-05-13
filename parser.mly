@@ -31,7 +31,7 @@
    STAR TILDE BANG SLASH PERCENT HAT BAR QUESTION COLON AND MUL_ASSIGN
    DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN
    AND_ASSIGN XOR_ASSIGN OR_ASSIGN LPAREN ATOMIC_LPAREN RPAREN LBRACK RBRACK
-   LBRACE RBRACE DOT COMMA SEMICOLON ELLIPSIS
+   LBRACE RBRACE DOT COMMA SEMICOLON ELLIPSIS EXTENSION
 %token EOF
 
 %type<context> save_context parameter_type_list function_definition1
@@ -212,6 +212,7 @@ unary_expression:
 | SIZEOF unary_expression
 | SIZEOF LPAREN type_name RPAREN
 | ALIGNOF LPAREN type_name RPAREN
+| EXTENSION unary_expression
     {}
 
 unary_operator:
@@ -338,6 +339,7 @@ declaration:
 | declaration_specifiers         init_declarator_list(declarator_varname)?     SEMICOLON
 | declaration_specifiers_typedef init_declarator_list(declarator_typedefname)? SEMICOLON
 | static_assert_declaration
+| EXTENSION declaration
     {}
 
 (* [declaration_specifier] corresponds to one declaration specifier in the C11
@@ -448,6 +450,7 @@ struct_declaration_list:
 struct_declaration:
 | specifier_qualifier_list struct_declarator_list? SEMICOLON
 | static_assert_declaration
+| EXTENSION struct_declaration
     {}
 
 
@@ -556,6 +559,7 @@ parameter_list:
 parameter_declaration:
 | declaration_specifiers declarator_varname
 | declaration_specifiers abstract_declarator?
+| EXTENSION parameter_declaration
     {}
 
 identifier_list:
@@ -684,6 +688,8 @@ function_definition1:
 function_definition:
 | ctx = function_definition1 declaration_list? compound_statement
     { restore_context ctx }
+| EXTENSION function_definition
+    {}
 
 declaration_list:
 | declaration
