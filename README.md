@@ -13,8 +13,10 @@ following journal paper (in process of review for publication):
 How to use the parser?
 ----------------------
 
-You need to have installed OCaml, the Menhir parser generator and
-ocamlbuild. In order to build it, you can just type `make`.
+You need to have installed [OCaml](https://ocaml.org/docs/install.html),
+the [Menhir](http://gallium.inria.fr/~fpottier/menhir/) parser generator
+and [ocamlbuild](https://github.com/ocaml/ocamlbuild).
+In order to build it, you can just type `make`.
 
 The executable that is produced takes a preprocessed C file in its
 standard input and raises an exception in the case of a parse
@@ -52,19 +54,19 @@ AST:
   - The file `parser.mly` contains a C99/C11 compliant parser. It
     mostly follows the grammar of the C11 standard.
   - The file `parser_ansi_compatible.mly` is compliant with C89, C99 and
-    C11 (depending on the options given in options.ml). It is
+    C11 (depending on the options given in `options.ml`). It is
     significantly more complex than `parser.mly`.
 
 The test suite
 --------------
 
-We provide, in the tests directory, a series of tests that are
+We provide, in the `tests/` directory, a series of tests that are
 particularly difficult to handle in a correct C parser. They are all
 valid C11 fragments, except for:
-  - The files whose name finishes with .fail.c
-  - `atomic_parenthesis.c`, which represent an unnecessary restriction in
-    the syntax presented in the C11 standard.
+  - The files whose name end with `.fail.c`
+  - `atomic_parenthesis.c`, which represents an unnecessary restriction
+    in the syntax presented in the C11 standard.
 
-In order to run the test suite, you need the cram
-(https://bitheap.org/cram/) tool, available on most major linux
+In order to run the test suite, you need the
+[cram](https://bitheap.org/cram/) tool, available on most major linux
 distributions. Then, simply type `make test`.
