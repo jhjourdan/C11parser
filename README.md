@@ -64,3 +64,7 @@ valid C11 fragments, except for:
   - The files whose name finishes with .fail.c
   - `atomic_parenthesis.c`, which represent an unnecessary restriction in
     the syntax presented in the C11 standard.
+
+In order to run the test suite, you need the cram
+(https://bitheap.org/cram/) tool, available on most major linux
+distributions. Then, simply type `make test`.
