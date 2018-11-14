@@ -41,17 +41,103 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %token<string> NAME
 %token VARIABLE TYPE
 %token CONSTANT STRING_LITERAL
-%token
-   ALIGNAS ALIGNOF ATOMIC BOOL COMPLEX IMAGINARY GENERIC NORETURN STATIC_ASSERT
-   THREAD_LOCAL AUTO BREAK CASE CHAR CONST CONTINUE DEFAULT DO DOUBLE ELSE ENUM
-   EXTERN FLOAT FOR GOTO IF INLINE INT LONG REGISTER RESTRICT RETURN SHORT
-   SIGNED SIZEOF STATIC STRUCT SWITCH TYPEDEF UNION UNSIGNED VOID VOLATILE WHILE
-%token
-   PTR INC DEC LEFT RIGHT LEQ GEQ EQEQ EQ NEQ LT GT ANDAND BARBAR PLUS MINUS
-   STAR TILDE BANG SLASH PERCENT HAT BAR QUESTION COLON AND MUL_ASSIGN
-   DIV_ASSIGN MOD_ASSIGN ADD_ASSIGN SUB_ASSIGN LEFT_ASSIGN RIGHT_ASSIGN
-   AND_ASSIGN XOR_ASSIGN OR_ASSIGN LPAREN ATOMIC_LPAREN RPAREN LBRACK RBRACK
-   LBRACE RBRACE DOT COMMA SEMICOLON ELLIPSIS
+
+%token ALIGNAS "_Alignas"
+%token ALIGNOF "_Alignof"
+%token ATOMIC "_Atomic"
+%token AUTO "auto"
+%token BOOL "_Bool"
+%token BREAK "break"
+%token CASE "case"
+%token CHAR "char"
+%token COMPLEX "_Complex"
+%token CONST "const"
+%token CONTINUE "continue"
+%token DEFAULT "default"
+%token DO "do"
+%token DOUBLE "double"
+%token ELSE "else"
+%token ENUM "enum"
+%token EXTERN "extern"
+%token FLOAT "float"
+%token FOR "for"
+%token GENERIC "_Generic"
+%token GOTO "goto"
+%token IF "if"
+%token IMAGINARY "_Imaginary"
+%token INLINE "inline"
+%token INT "int"
+%token LONG "long"
+%token NORETURN "_Noreturn"
+%token REGISTER "register"
+%token RESTRICT "restrict"
+%token RETURN "return"
+%token SHORT "short"
+%token SIGNED "signed"
+%token SIZEOF "sizeof"
+%token STATIC "static"
+%token STATIC_ASSERT "_Static_assert"
+%token STRUCT "struct"
+%token SWITCH "switch"
+%token THREAD_LOCAL "_Thread_local"
+%token TYPEDEF "typedef"
+%token UNION "union"
+%token UNSIGNED "unsigned"
+%token VOID "void"
+%token VOLATILE "volatile"
+%token WHILE "while"
+
+%token ELLIPSIS "..."
+%token ADD_ASSIGN "+="
+%token SUB_ASSIGN "-="
+%token MUL_ASSIGN "*="
+%token DIV_ASSIGN "/="
+%token MOD_ASSIGN "%="
+%token OR_ASSIGN "|="
+%token AND_ASSIGN "&="
+%token XOR_ASSIGN "^="
+%token LEFT_ASSIGN "<<="
+%token RIGHT_ASSIGN ">>="
+%token LEFT "<<"
+%token RIGHT ">>"
+%token EQEQ "=="
+%token NEQ "!="
+%token LEQ "<="
+%token GEQ ">="
+%token EQ "="
+%token LT "<"
+%token GT ">"
+%token INC "++"
+%token DEC "--"
+%token PTR "->"
+%token PLUS "+"
+%token MINUS "-"
+%token STAR "*"
+%token SLASH "/"
+%token PERCENT "%"
+%token BANG "!"
+%token ANDAND "&&"
+%token BARBAR "||"
+%token AND "&"
+%token BAR "|"
+%token HAT "^"
+%token QUESTION "?"
+%token COLON ":"
+%token TILDE "~"
+%token LBRACE "{"
+%token RBRACE "}"
+%token LBRACK "["
+%token RBRACK "]"
+%token LPAREN "("
+%token RPAREN ")"
+%token SEMICOLON ";"
+%token COMMA ","
+%token DOT "."
+
+(* ATOMIC_LPAREN is "special"; it's used for left parentheses that
+   follow the ["_Atomic"] keyword. It isn't given a token alias *)
+%token ATOMIC_LPAREN
+
 %token EOF
 
 %type<context> save_context parameter_type_list function_definition1
@@ -190,66 +276,66 @@ primary_expression:
 | var_name
 | CONSTANT
 | STRING_LITERAL
-| LPAREN expression RPAREN
+| "(" expression ")"
 | generic_selection
     {}
 
 generic_selection:
-| GENERIC LPAREN assignment_expression COMMA generic_assoc_list RPAREN
+| "_Generic" "(" assignment_expression "," generic_assoc_list ")"
     {}
 
 generic_assoc_list:
 | generic_association
-| generic_assoc_list COMMA generic_association
+| generic_assoc_list "," generic_association
     {}
 
 generic_association:
-| type_name COLON assignment_expression
-| DEFAULT COLON assignment_expression
+| type_name ":" assignment_expression
+| "default" ":" assignment_expression
     {}
 
 postfix_expression:
 | primary_expression
-| postfix_expression LBRACK expression RBRACK
-| postfix_expression LPAREN argument_expression_list? RPAREN
-| postfix_expression DOT general_identifier
-| postfix_expression PTR general_identifier
-| postfix_expression INC
-| postfix_expression DEC
-| LPAREN type_name RPAREN LBRACE initializer_list COMMA? RBRACE
+| postfix_expression "[" expression "]"
+| postfix_expression "(" argument_expression_list? ")"
+| postfix_expression "." general_identifier
+| postfix_expression "->" general_identifier
+| postfix_expression "++"
+| postfix_expression "--"
+| "(" type_name ")" "{" initializer_list ","? "}"
     {}
 
 argument_expression_list:
 | assignment_expression
-| argument_expression_list COMMA assignment_expression
+| argument_expression_list "," assignment_expression
     {}
 
 unary_expression:
 | postfix_expression
-| INC unary_expression
-| DEC unary_expression
+| "++" unary_expression
+| "--" unary_expression
 | unary_operator cast_expression
-| SIZEOF unary_expression
-| SIZEOF LPAREN type_name RPAREN
-| ALIGNOF LPAREN type_name RPAREN
+| "sizeof" unary_expression
+| "sizeof" "(" type_name ")"
+| "_Alignof" "(" type_name ")"
     {}
 
 unary_operator:
-| AND
-| STAR
-| PLUS
-| MINUS
-| TILDE
-| BANG
+| "&"
+| "*"
+| "+"
+| "-"
+| "~"
+| "!"
     {}
 
 cast_expression:
 | unary_expression
-| LPAREN type_name RPAREN cast_expression
+| "(" type_name ")" cast_expression
     {}
 
 multiplicative_operator:
-  STAR | SLASH | PERCENT {}
+  "*" | "/" | "%" {}
 
 multiplicative_expression:
 | cast_expression
@@ -257,7 +343,7 @@ multiplicative_expression:
     {}
 
 additive_operator:
-  PLUS | MINUS {}
+  "+" | "-" {}
 
 additive_expression:
 | multiplicative_expression
@@ -265,7 +351,7 @@ additive_expression:
     {}
 
 shift_operator:
-  LEFT | RIGHT {}
+  "<<" | ">>" {}
 
 shift_expression:
 | additive_expression
@@ -273,7 +359,7 @@ shift_expression:
     {}
 
 relational_operator:
-  LT | GT | LEQ | GEQ {}
+  "<" | ">" | "<=" | ">=" {}
 
 relational_expression:
 | shift_expression
@@ -283,7 +369,7 @@ relational_expression:
 
 
 equality_operator:
-  EQEQ | NEQ {}
+  "==" | "!=" {}
 
 equality_expression:
 | relational_expression
@@ -292,32 +378,32 @@ equality_expression:
 
 and_expression:
 | equality_expression
-| and_expression AND equality_expression
+| and_expression "&" equality_expression
     {}
 
 exclusive_or_expression:
 | and_expression
-| exclusive_or_expression HAT and_expression
+| exclusive_or_expression "^" and_expression
     {}
 
 inclusive_or_expression:
 | exclusive_or_expression
-| inclusive_or_expression BAR exclusive_or_expression
+| inclusive_or_expression "|" exclusive_or_expression
     {}
 
 logical_and_expression:
 | inclusive_or_expression
-| logical_and_expression ANDAND inclusive_or_expression
+| logical_and_expression "&&" inclusive_or_expression
     {}
 
 logical_or_expression:
 | logical_and_expression
-| logical_or_expression BARBAR logical_and_expression
+| logical_or_expression "||" logical_and_expression
     {}
 
 conditional_expression:
 | logical_or_expression
-| logical_or_expression QUESTION expression COLON conditional_expression
+| logical_or_expression "?" expression ":" conditional_expression
     {}
 
 assignment_expression:
@@ -326,22 +412,22 @@ assignment_expression:
     {}
 
 assignment_operator:
-| EQ
-| MUL_ASSIGN
-| DIV_ASSIGN
-| MOD_ASSIGN
-| ADD_ASSIGN
-| SUB_ASSIGN
-| LEFT_ASSIGN
-| RIGHT_ASSIGN
-| AND_ASSIGN
-| XOR_ASSIGN
-| OR_ASSIGN
+| "="
+| "*="
+| "/="
+| "%="
+| "+="
+| "-="
+| "<<="
+| ">>="
+| "&="
+| "^="
+| "|="
     {}
 
 expression:
 | assignment_expression
-| expression COMMA assignment_expression
+| expression "," assignment_expression
     {}
 
 
@@ -349,22 +435,22 @@ constant_expression:
 | conditional_expression
     {}
 
-(* We separate type declarations, which contain an occurrence of [TYPEDEF], and
+(* We separate type declarations, which contain an occurrence of ["typedef"], and
    normal declarations, which do not. This makes it possible to distinguish /in
    the grammar/ whether a declaration introduces typedef names or variables in
    the context. *)
 
 declaration:
-| declaration_specifiers         init_declarator_list(declarator_varname)?     SEMICOLON
-| declaration_specifiers_typedef init_declarator_list(declarator_typedefname)? SEMICOLON
+| declaration_specifiers         init_declarator_list(declarator_varname)?     ";"
+| declaration_specifiers_typedef init_declarator_list(declarator_typedefname)? ";"
 | static_assert_declaration
     {}
 
 (* [declaration_specifier] corresponds to one declaration specifier in the C11
-   standard, deprived of TYPEDEF and of type specifiers. *)
+   standard, deprived of "typedef" and of type specifiers. *)
 
 declaration_specifier:
-| storage_class_specifier (* deprived of TYPEDEF *)
+| storage_class_specifier (* deprived of "typedef" *)
 | type_qualifier
 | function_specifier
 | alignment_specifier
@@ -386,7 +472,7 @@ declaration_specifier:
 
    The first field is a named t, while the second is unnamed of type t.
 
-   [declaration_specifiers] forbids the [TYPEDEF] keyword. *)
+   [declaration_specifiers] forbids the ["typedef"] keyword. *)
 
 declaration_specifiers:
 | list_eq1(type_specifier_unique,    declaration_specifier)
@@ -394,11 +480,11 @@ declaration_specifiers:
     {}
 
 (* [declaration_specifiers_typedef] is analogous to [declaration_specifiers],
-   but requires the [TYPEDEF] keyword to be present (exactly once). *)
+   but requires the ["typedef"] keyword to be present (exactly once). *)
 
 declaration_specifiers_typedef:
-| list_eq1_eq1(TYPEDEF, type_specifier_unique,    declaration_specifier)
-| list_eq1_ge1(TYPEDEF, type_specifier_nonunique, declaration_specifier)
+| list_eq1_eq1("typedef", type_specifier_unique,    declaration_specifier)
+| list_eq1_ge1("typedef", type_specifier_nonunique, declaration_specifier)
     {}
 
 (* The parameter [declarator] in [init_declarator_list] and [init_declarator]
@@ -406,44 +492,44 @@ declaration_specifiers_typedef:
 
 init_declarator_list(declarator):
 | init_declarator(declarator)
-| init_declarator_list(declarator) COMMA init_declarator(declarator)
+| init_declarator_list(declarator) "," init_declarator(declarator)
     {}
 
 init_declarator(declarator):
 | declarator
-| declarator EQ c_initializer
+| declarator "=" c_initializer
     {}
 
 (* [storage_class_specifier] corresponds to storage-class-specifier in the
-   C11 standard, deprived of [TYPEDEF] (which receives special treatment). *)
+   C11 standard, deprived of ["typedef"] (which receives special treatment). *)
 
 storage_class_specifier:
-| EXTERN
-| STATIC
-| THREAD_LOCAL
-| AUTO
-| REGISTER
+| "extern"
+| "static"
+| "_Thread_local"
+| "auto"
+| "register"
     {}
 
 (* A type specifier which can appear together with other type specifiers. *)
 
 type_specifier_nonunique:
-| CHAR
-| SHORT
-| INT
-| LONG
-| FLOAT
-| DOUBLE
-| SIGNED
-| UNSIGNED
-| COMPLEX
+| "char"
+| "short"
+| "int"
+| "long"
+| "float"
+| "double"
+| "signed"
+| "unsigned"
+| "_Complex"
     {}
 
 (* A type specifier which cannot appear together with other type specifiers. *)
 
 type_specifier_unique:
-| VOID
-| BOOL
+| "void"
+| "_Bool"
 | atomic_type_specifier
 | struct_or_union_specifier
 | enum_specifier
@@ -451,13 +537,13 @@ type_specifier_unique:
     {}
 
 struct_or_union_specifier:
-| struct_or_union general_identifier? LBRACE struct_declaration_list RBRACE
+| struct_or_union general_identifier? "{" struct_declaration_list "}"
 | struct_or_union general_identifier
     {}
 
 struct_or_union:
-| STRUCT
-| UNION
+| "struct"
+| "union"
     {}
 
 struct_declaration_list:
@@ -466,7 +552,7 @@ struct_declaration_list:
     {}
 
 struct_declaration:
-| specifier_qualifier_list struct_declarator_list? SEMICOLON
+| specifier_qualifier_list struct_declarator_list? ";"
 | static_assert_declaration
     {}
 
@@ -481,27 +567,27 @@ specifier_qualifier_list:
 
 struct_declarator_list:
 | struct_declarator
-| struct_declarator_list COMMA struct_declarator
+| struct_declarator_list "," struct_declarator
     {}
 
 struct_declarator:
 | declarator
-| declarator? COLON constant_expression
+| declarator? ":" constant_expression
     {}
 
 enum_specifier:
-| ENUM general_identifier? LBRACE enumerator_list COMMA? RBRACE
-| ENUM general_identifier
+| "enum" general_identifier? "{" enumerator_list ","? "}"
+| "enum" general_identifier
     {}
 
 enumerator_list:
 | enumerator
-| enumerator_list COMMA enumerator
+| enumerator_list "," enumerator
     {}
 
 enumerator:
 | i = enumeration_constant
-| i = enumeration_constant EQ constant_expression
+| i = enumeration_constant "=" constant_expression
     { declare_varname i }
 
 enumeration_constant:
@@ -509,24 +595,24 @@ enumeration_constant:
     { i }
 
 atomic_type_specifier:
-| ATOMIC LPAREN type_name RPAREN
-| ATOMIC ATOMIC_LPAREN type_name RPAREN
+| "_Atomic" "(" type_name ")"
+| "_Atomic" ATOMIC_LPAREN type_name ")"
     {}
 
 type_qualifier:
-| CONST
-| RESTRICT
-| VOLATILE
-| ATOMIC
+| "const"
+| "restrict"
+| "volatile"
+| "_Atomic"
     {}
 
 function_specifier:
-  INLINE | NORETURN
+  "inline" | "_Noreturn"
     {}
 
 alignment_specifier:
-| ALIGNAS LPAREN type_name RPAREN
-| ALIGNAS LPAREN constant_expression RPAREN
+| "_Alignas" "(" type_name ")"
+| "_Alignas" "(" constant_expression ")"
     {}
 
 declarator:
@@ -544,20 +630,20 @@ declarator:
 direct_declarator:
 | i = general_identifier
     { identifier_declarator i }
-| LPAREN save_context d = declarator RPAREN
+| "(" save_context d = declarator ")"
     { d }
-| d = direct_declarator LBRACK type_qualifier_list? assignment_expression? RBRACK
-| d = direct_declarator LBRACK STATIC type_qualifier_list? assignment_expression RBRACK
-| d = direct_declarator LBRACK type_qualifier_list STATIC assignment_expression RBRACK
-| d = direct_declarator LBRACK type_qualifier_list? STAR RBRACK
+| d = direct_declarator "[" type_qualifier_list? assignment_expression? "]"
+| d = direct_declarator "[" "static" type_qualifier_list? assignment_expression "]"
+| d = direct_declarator "[" type_qualifier_list "static" assignment_expression "]"
+| d = direct_declarator "[" type_qualifier_list? "*" "]"
     { other_declarator d }
-| d = direct_declarator LPAREN ctx = scoped(parameter_type_list) RPAREN
+| d = direct_declarator "(" ctx = scoped(parameter_type_list) ")"
     { function_declarator d ctx }
-| d = direct_declarator LPAREN save_context identifier_list? RPAREN
+| d = direct_declarator "(" save_context identifier_list? ")"
     { other_declarator d }
 
 pointer:
-| STAR type_qualifier_list? pointer?
+| "*" type_qualifier_list? pointer?
     {}
 
 type_qualifier_list:
@@ -565,12 +651,12 @@ type_qualifier_list:
     {}
 
 parameter_type_list:
-| parameter_list option(COMMA ELLIPSIS {}) ctx = save_context
+| parameter_list option("," "..." {}) ctx = save_context
     { ctx }
 
 parameter_list:
 | parameter_declaration
-| parameter_list COMMA parameter_declaration
+| parameter_list "," parameter_declaration
     {}
 
 parameter_declaration:
@@ -580,7 +666,7 @@ parameter_declaration:
 
 identifier_list:
 | var_name
-| identifier_list COMMA var_name
+| identifier_list "," var_name
     {}
 
 type_name:
@@ -598,26 +684,26 @@ abstract_declarator:
 
 
 direct_abstract_declarator:
-| LPAREN save_context abstract_declarator RPAREN
-| direct_abstract_declarator? LBRACK ioption(type_qualifier_list) assignment_expression? RBRACK
-| direct_abstract_declarator? LBRACK STATIC type_qualifier_list? assignment_expression RBRACK
-| direct_abstract_declarator? LBRACK type_qualifier_list STATIC assignment_expression RBRACK
-| direct_abstract_declarator? LBRACK STAR RBRACK
-| ioption(direct_abstract_declarator) LPAREN scoped(parameter_type_list)? RPAREN
+| "(" save_context abstract_declarator ")"
+| direct_abstract_declarator? "[" ioption(type_qualifier_list) assignment_expression? "]"
+| direct_abstract_declarator? "[" "static" type_qualifier_list? assignment_expression "]"
+| direct_abstract_declarator? "[" type_qualifier_list "static" assignment_expression "]"
+| direct_abstract_declarator? "[" "*" "]"
+| ioption(direct_abstract_declarator) "(" scoped(parameter_type_list)? ")"
     {}
 
 c_initializer:
 | assignment_expression
-| LBRACE initializer_list COMMA? RBRACE
+| "{" initializer_list ","? "}"
     {}
 
 initializer_list:
 | designation? c_initializer
-| initializer_list COMMA designation? c_initializer
+| initializer_list "," designation? c_initializer
     {}
 
 designation:
-| designator_list EQ
+| designator_list "="
     {}
 
 designator_list:
@@ -625,12 +711,12 @@ designator_list:
     {}
 
 designator:
-| LBRACK constant_expression RBRACK
-| DOT general_identifier
+| "[" constant_expression "]"
+| "." general_identifier
     {}
 
 static_assert_declaration:
-| STATIC_ASSERT LPAREN constant_expression COMMA STRING_LITERAL RPAREN SEMICOLON
+| "_Static_assert" "(" constant_expression "," STRING_LITERAL ")" ";"
     {}
 
 statement:
@@ -643,13 +729,13 @@ statement:
     {}
 
 labeled_statement:
-| general_identifier COLON statement
-| CASE constant_expression COLON statement
-| DEFAULT COLON statement
+| general_identifier ":" statement
+| "case" constant_expression ":" statement
+| "default" ":" statement
     {}
 
 compound_statement:
-| LBRACE block_item_list? RBRACE
+| "{" block_item_list? "}"
     {}
 
 block_item_list:
@@ -662,27 +748,27 @@ block_item:
     {}
 
 expression_statement:
-| expression? SEMICOLON
+| expression? ";"
     {}
 
 selection_statement:
-| IF LPAREN expression RPAREN scoped(statement) ELSE scoped(statement)
-| IF LPAREN expression RPAREN scoped(statement) %prec below_ELSE
-| SWITCH LPAREN expression RPAREN scoped(statement)
+| "if" "(" expression ")" scoped(statement) "else" scoped(statement)
+| "if" "(" expression ")" scoped(statement) %prec below_ELSE
+| "switch" "(" expression ")" scoped(statement)
     {}
 
 iteration_statement:
-| WHILE LPAREN expression RPAREN scoped(statement)
-| DO scoped(statement) WHILE LPAREN expression RPAREN SEMICOLON
-| FOR LPAREN expression? SEMICOLON expression? SEMICOLON expression? RPAREN scoped(statement)
-| FOR LPAREN declaration expression? SEMICOLON expression? RPAREN scoped(statement)
+| "while" "(" expression ")" scoped(statement)
+| "do" scoped(statement) "while" "(" expression ")" ";"
+| "for" "(" expression? ";" expression? ";" expression? ")" scoped(statement)
+| "for" "(" declaration expression? ";" expression? ")" scoped(statement)
     {}
 
 jump_statement:
-| GOTO general_identifier SEMICOLON
-| CONTINUE SEMICOLON
-| BREAK SEMICOLON
-| RETURN expression? SEMICOLON
+| "goto" general_identifier ";"
+| "continue" ";"
+| "break" ";"
+| "return" expression? ";"
     {}
 
 translation_unit_file:
