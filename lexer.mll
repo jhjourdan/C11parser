@@ -48,7 +48,6 @@ let () =
       ("_Noreturn", NORETURN);
       ("_Static_assert", STATIC_ASSERT);
       ("_Thread_local", THREAD_LOCAL);
-      ("alignof", ALIGNOF);
       ("auto", AUTO);
       ("break", BREAK);
       ("case", CASE);
