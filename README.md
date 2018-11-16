@@ -13,8 +13,12 @@ following journal paper (in process of review for publication):
 How to use the parser?
 ----------------------
 
-You need to have installed OCaml, the Menhir parser generator and
-ocamlbuild. In order to build it, you can just type `make`.
+You need to have installed
+- OCaml (known to work with 4.05.0),
+- the Menhir parser generator (known to work with 20181113) and
+- ocamlbuild (known to work with 0.12.0)
+
+In order to build it, you can just type `make`.
 
 The executable that is produced takes a preprocessed C file in its
 standard input and raises an exception in the case of a parse
