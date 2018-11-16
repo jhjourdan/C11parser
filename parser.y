@@ -29,105 +29,105 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 %start translation_unit_file
-%token XOR_ASSIGN
-%token WHILE
-%token VOLATILE
-%token VOID
-%token VARIABLE
-%token UNSIGNED
-%token UNION
-%token TYPEDEF
-%token TYPE
-%token TILDE
-%token THREAD_LOCAL
-%token SWITCH
-%token SUB_ASSIGN
-%token STRUCT
-%token STRING_LITERAL
-%token STATIC_ASSERT
-%token STATIC
-%token STAR
-%token SLASH
-%token SIZEOF
-%token SIGNED
-%token SHORT
-%token SEMICOLON
-%token RPAREN
-%token RIGHT_ASSIGN
-%token RIGHT
-%token RETURN
-%token RESTRICT
-%token REGISTER
-%token RBRACK
-%token RBRACE
-%token QUESTION
-%token PTR
-%token PLUS
-%token PERCENT
-%token OR_ASSIGN
-%token NORETURN
-%token NEQ
-%token NAME
-%token MUL_ASSIGN
-%token MOD_ASSIGN
-%token MINUS
-%token LT
-%token LPAREN
-%token LONG
-%token LEQ
-%token LEFT_ASSIGN
-%token LEFT
-%token LBRACK
-%token LBRACE
-%token INT
-%token INLINE
-%token INC
-%token IMAGINARY
-%token IF
-%token HAT
-%token GT
-%token GOTO
-%token GEQ
-%token GENERIC
-%token FOR
-%token FLOAT
-%token EXTERN
-%token EQEQ
-%token EQ
-%token EOF
-%token ENUM
-%token ELLIPSIS
-%token DOUBLE
-%token DOT
-%token DO
-%token DIV_ASSIGN
-%token DEFAULT
-%token DEC
-%token CONTINUE
-%token CONSTANT
-%token CONST
-%token COMPLEX
-%token COMMA
-%token COLON
-%token CHAR
-%token CASE
-%token BREAK
-%token BOOL
-%token BARBAR
-%token BAR
-%token BANG
-%token AUTO
-%token ATOMIC_LPAREN
-%token ATOMIC
-%token AND_ASSIGN
-%token ANDAND
-%token AND
-%token ALIGNOF
-%token ALIGNAS
 %token ADD_ASSIGN
+%token ALIGNAS
+%token ALIGNOF
+%token AND
+%token ANDAND
+%token AND_ASSIGN
+%token ATOMIC
+%token ATOMIC_LPAREN
+%token AUTO
+%token BANG
+%token BAR
+%token BARBAR
+%token BOOL
+%token BREAK
+%token CASE
+%token CHAR
+%token COLON
+%token COMMA
+%token COMPLEX
+%token CONST
+%token CONSTANT
+%token CONTINUE
+%token DEC
+%token DEFAULT
+%token DIV_ASSIGN
+%token DO
+%token DOT
+%token DOUBLE
+%token ELLIPSIS
 %token ELSE
-%nonassoc below_ELSE 
-%nonassoc ELSE 
+%token ENUM
+%token EOF
+%token EQ
+%token EQEQ
+%token EXTERN
+%token FLOAT
+%token FOR
+%token GENERIC
+%token GEQ
+%token GOTO
+%token GT
+%token HAT
+%token IF
+%token IMAGINARY
+%token INC
+%token INLINE
+%token INT
+%token LBRACE
+%token LBRACK
+%token LEFT
+%token LEFT_ASSIGN
+%token LEQ
+%token LONG
+%token LPAREN
+%token LT
+%token MINUS
+%token MOD_ASSIGN
+%token MUL_ASSIGN
+%token NAME
+%token NEQ
+%token NORETURN
+%token OR_ASSIGN
+%token PERCENT
+%token PLUS
+%token PTR
+%token QUESTION
+%token RBRACE
+%token RBRACK
+%token REGISTER
+%token RESTRICT
+%token RETURN
+%token RIGHT
+%token RIGHT_ASSIGN
+%token RPAREN
+%token SEMICOLON
+%token SHORT
+%token SIGNED
+%token SIZEOF
+%token SLASH
+%token STAR
+%token STATIC
+%token STATIC_ASSERT
+%token STRING_LITERAL
+%token STRUCT
+%token SUB_ASSIGN
+%token SWITCH
+%token THREAD_LOCAL
+%token TILDE
+%token TYPE
+%token TYPEDEF
+%token UNION
+%token UNSIGNED
+%token VARIABLE
+%token VOID
+%token VOLATILE
+%token WHILE
+%token XOR_ASSIGN
+%nonassoc below_ELSE
+%nonassoc ELSE
 %type <unit> declarator
 %type <unit> direct_declarator
 %type <unit> enumeration_constant
@@ -140,112 +140,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %type <unit> var_name
 %%
 
-option_type_qualifier_list_:
+option_COMMA_:
   
     {}
-| type_qualifier_list
-    {}
-
-option_struct_declarator_list_:
-  
-    {}
-| struct_declarator_list
-    {}
-
-option_scoped_parameter_type_list__:
-  
-    {}
-| scoped_parameter_type_list_
-    {}
-
-option_pointer_:
-  
-    {}
-| pointer
-    {}
-
-option_init_declarator_list_declarator_varname__:
-  
-    {}
-| init_declarator_list_declarator_varname_
-    {}
-
-option_init_declarator_list_declarator_typedefname__:
-  
-    {}
-| init_declarator_list_declarator_typedefname_
-    {}
-
-option_identifier_list_:
-  
-    {}
-| identifier_list
-    {}
-
-option_general_identifier_:
-  
-    {}
-| general_identifier
-    {}
-
-option_expression_:
-  
-    {}
-| expression
-    {}
-
-option_direct_abstract_declarator_:
-  
-    {}
-| direct_abstract_declarator
-    {}
-
-option_designator_list_:
-  
-    {}
-| designator_list
-    {}
-
-option_designation_:
-  
-    {}
-| designation
-    {}
-
-option_declarator_:
-  
-    {}
-| declarator
-    {}
-
-option_declaration_list_:
-  
-    {}
-| declaration_list
-    {}
-
-option_block_item_list_:
-  
-    {}
-| block_item_list
-    {}
-
-option_assignment_expression_:
-  
-    {}
-| assignment_expression
-    {}
-
-option_argument_expression_list_:
-  
-    {}
-| argument_expression_list
-    {}
-
-option_abstract_declarator_:
-  
-    {}
-| abstract_declarator
+| COMMA
     {}
 
 option___anonymous_0_:
@@ -254,16 +152,112 @@ option___anonymous_0_:
 | COMMA ELLIPSIS
     {}
 
-option_COMMA_:
+option_abstract_declarator_:
   
     {}
-| COMMA
+| abstract_declarator
     {}
 
-list_type_qualifier_:
+option_argument_expression_list_:
   
     {}
-| type_qualifier list_type_qualifier_
+| argument_expression_list
+    {}
+
+option_assignment_expression_:
+  
+    {}
+| assignment_expression
+    {}
+
+option_block_item_list_:
+  
+    {}
+| block_item_list
+    {}
+
+option_declaration_list_:
+  
+    {}
+| declaration_list
+    {}
+
+option_declarator_:
+  
+    {}
+| declarator
+    {}
+
+option_designation_:
+  
+    {}
+| designation
+    {}
+
+option_designator_list_:
+  
+    {}
+| designator_list
+    {}
+
+option_direct_abstract_declarator_:
+  
+    {}
+| direct_abstract_declarator
+    {}
+
+option_expression_:
+  
+    {}
+| expression
+    {}
+
+option_general_identifier_:
+  
+    {}
+| general_identifier
+    {}
+
+option_identifier_list_:
+  
+    {}
+| identifier_list
+    {}
+
+option_init_declarator_list_declarator_typedefname__:
+  
+    {}
+| init_declarator_list_declarator_typedefname_
+    {}
+
+option_init_declarator_list_declarator_varname__:
+  
+    {}
+| init_declarator_list_declarator_varname_
+    {}
+
+option_pointer_:
+  
+    {}
+| pointer
+    {}
+
+option_scoped_parameter_type_list__:
+  
+    {}
+| scoped_parameter_type_list_
+    {}
+
+option_struct_declarator_list_:
+  
+    {}
+| struct_declarator_list
+    {}
+
+option_type_qualifier_list_:
+  
+    {}
+| type_qualifier_list
     {}
 
 list_declaration_specifier_:
@@ -272,16 +266,10 @@ list_declaration_specifier_:
 | declaration_specifier list_declaration_specifier_
     {}
 
-list_eq1_type_specifier_unique_type_qualifier_:
-  type_specifier_unique list_type_qualifier_
+list_type_qualifier_:
+  
     {}
-| type_qualifier list_eq1_type_specifier_unique_type_qualifier_
-    {}
-
-list_eq1_type_specifier_unique_declaration_specifier_:
-  type_specifier_unique list_declaration_specifier_
-    {}
-| declaration_specifier list_eq1_type_specifier_unique_declaration_specifier_
+| type_qualifier list_type_qualifier_
     {}
 
 list_eq1_TYPEDEF_declaration_specifier_:
@@ -290,12 +278,16 @@ list_eq1_TYPEDEF_declaration_specifier_:
 | declaration_specifier list_eq1_TYPEDEF_declaration_specifier_
     {}
 
-list_ge1_type_specifier_nonunique_type_qualifier_:
-  type_specifier_nonunique list_type_qualifier_
+list_eq1_type_specifier_unique_declaration_specifier_:
+  type_specifier_unique list_declaration_specifier_
     {}
-| type_specifier_nonunique list_ge1_type_specifier_nonunique_type_qualifier_
+| declaration_specifier list_eq1_type_specifier_unique_declaration_specifier_
     {}
-| type_qualifier list_ge1_type_specifier_nonunique_type_qualifier_
+
+list_eq1_type_specifier_unique_type_qualifier_:
+  type_specifier_unique list_type_qualifier_
+    {}
+| type_qualifier list_eq1_type_specifier_unique_type_qualifier_
     {}
 
 list_ge1_type_specifier_nonunique_declaration_specifier_:
@@ -304,6 +296,14 @@ list_ge1_type_specifier_nonunique_declaration_specifier_:
 | type_specifier_nonunique list_ge1_type_specifier_nonunique_declaration_specifier_
     {}
 | declaration_specifier list_ge1_type_specifier_nonunique_declaration_specifier_
+    {}
+
+list_ge1_type_specifier_nonunique_type_qualifier_:
+  type_specifier_nonunique list_type_qualifier_
+    {}
+| type_specifier_nonunique list_ge1_type_specifier_nonunique_type_qualifier_
+    {}
+| type_qualifier list_ge1_type_specifier_nonunique_type_qualifier_
     {}
 
 list_eq1_eq1_TYPEDEF_type_specifier_unique_declaration_specifier_:
@@ -328,12 +328,12 @@ typedef_name:
   NAME TYPE
     {}
 
-typedef_name_spec:
-  typedef_name
-    {}
-
 var_name:
   NAME VARIABLE
+    {}
+
+typedef_name_spec:
+  typedef_name
     {}
 
 general_identifier:
@@ -346,24 +346,24 @@ save_context:
   
     {}
 
-scoped_parameter_type_list_:
-  save_context parameter_type_list
-    {}
-
 scoped_compound_statement_:
   save_context compound_statement
     {}
 
-c99_scoped_statement_:
-  save_context statement
+scoped_iteration_statement_:
+  save_context iteration_statement
     {}
 
-c99_scoped_selection_statement_:
+scoped_parameter_type_list_:
+  save_context parameter_type_list
+    {}
+
+scoped_selection_statement_:
   save_context selection_statement
     {}
 
-c99_scoped_iteration_statement_:
-  save_context iteration_statement
+scoped_statement_:
+  save_context statement
     {}
 
 declarator_varname:
@@ -634,28 +634,28 @@ declaration_specifiers_typedef:
 | list_eq1_ge1_TYPEDEF_type_specifier_nonunique_declaration_specifier_
     {}
 
-init_declarator_list_declarator_varname_:
-  init_declarator_declarator_varname_
-    {}
-| init_declarator_list_declarator_varname_ COMMA init_declarator_declarator_varname_
-    {}
-
 init_declarator_list_declarator_typedefname_:
   init_declarator_declarator_typedefname_
     {}
 | init_declarator_list_declarator_typedefname_ COMMA init_declarator_declarator_typedefname_
     {}
 
-init_declarator_declarator_varname_:
-  declarator_varname
+init_declarator_list_declarator_varname_:
+  init_declarator_declarator_varname_
     {}
-| declarator_varname EQ c_initializer
+| init_declarator_list_declarator_varname_ COMMA init_declarator_declarator_varname_
     {}
 
 init_declarator_declarator_typedefname_:
   declarator_typedefname
     {}
 | declarator_typedefname EQ c_initializer
+    {}
+
+init_declarator_declarator_varname_:
+  declarator_varname
+    {}
+| declarator_varname EQ c_initializer
     {}
 
 storage_class_specifier:
@@ -917,9 +917,9 @@ statement:
     {}
 | expression_statement
     {}
-| c99_scoped_selection_statement_
+| scoped_selection_statement_
     {}
-| c99_scoped_iteration_statement_
+| scoped_iteration_statement_
     {}
 | jump_statement
     {}
@@ -951,21 +951,21 @@ expression_statement:
     {}
 
 selection_statement:
-  IF LPAREN expression RPAREN c99_scoped_statement_ ELSE c99_scoped_statement_
+  IF LPAREN expression RPAREN scoped_statement_ ELSE scoped_statement_
     {}
-| IF LPAREN expression RPAREN c99_scoped_statement_ %prec below_ELSE
+| IF LPAREN expression RPAREN scoped_statement_ %prec below_ELSE
     {}
-| SWITCH LPAREN expression RPAREN c99_scoped_statement_
+| SWITCH LPAREN expression RPAREN scoped_statement_
     {}
 
 iteration_statement:
-  WHILE LPAREN expression RPAREN c99_scoped_statement_
+  WHILE LPAREN expression RPAREN scoped_statement_
     {}
-| DO c99_scoped_statement_ WHILE LPAREN expression RPAREN SEMICOLON
+| DO scoped_statement_ WHILE LPAREN expression RPAREN SEMICOLON
     {}
-| FOR LPAREN option_expression_ SEMICOLON option_expression_ SEMICOLON option_expression_ RPAREN c99_scoped_statement_
+| FOR LPAREN option_expression_ SEMICOLON option_expression_ SEMICOLON option_expression_ RPAREN scoped_statement_
     {}
-| FOR LPAREN declaration option_expression_ SEMICOLON option_expression_ RPAREN c99_scoped_statement_
+| FOR LPAREN declaration option_expression_ SEMICOLON option_expression_ RPAREN scoped_statement_
     {}
 
 jump_statement:
