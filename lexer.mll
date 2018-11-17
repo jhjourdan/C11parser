@@ -34,55 +34,6 @@ open Context
 open Parser
 open Options
 
-let lexicon : (string, token) Hashtbl.t = Hashtbl.create 17
-
-let () =
-  List.iter (fun (key, builder) -> Hashtbl.add lexicon key builder)
-    [ ("_Alignas", ALIGNAS);
-      ("_Alignof", ALIGNOF);
-      ("_Atomic", ATOMIC);
-      ("_Bool", BOOL);
-      ("_Complex", COMPLEX);
-      ("_Generic", GENERIC);
-      ("_Imaginary", IMAGINARY);
-      ("_Noreturn", NORETURN);
-      ("_Static_assert", STATIC_ASSERT);
-      ("_Thread_local", THREAD_LOCAL);
-      ("auto", AUTO);
-      ("break", BREAK);
-      ("case", CASE);
-      ("char", CHAR);
-      ("const", CONST);
-      ("continue", CONTINUE);
-      ("default", DEFAULT);
-      ("do", DO);
-      ("double", DOUBLE);
-      ("else", ELSE);
-      ("enum", ENUM);
-      ("extern", EXTERN);
-      ("float", FLOAT);
-      ("for", FOR);
-      ("goto", GOTO);
-      ("if", IF);
-      ("inline", INLINE);
-      ("int", INT);
-      ("long", LONG);
-      ("register", REGISTER);
-      ("restrict", RESTRICT);
-      ("return", RETURN);
-      ("short", SHORT);
-      ("signed", SIGNED);
-      ("sizeof", SIZEOF);
-      ("static", STATIC);
-      ("struct", STRUCT);
-      ("switch", SWITCH);
-      ("typedef", TYPEDEF);
-      ("union", UNION);
-      ("unsigned", UNSIGNED);
-      ("void", VOID);
-      ("volatile", VOLATILE);
-      ("while", WHILE)]
-
 let init _filename channel : Lexing.lexbuf =
   Lexing.from_channel channel
 
@@ -235,9 +186,51 @@ rule initial = parse
   | ";"                           { SEMICOLON }
   | ","                           { COMMA }
   | "."                           { DOT }
-  | identifier as id              {
-      try Hashtbl.find lexicon id
-      with Not_found -> NAME id }
+  | "_Alignas"                    { ALIGNAS }
+  | "_Alignof"                    { ALIGNOF }
+  | "_Atomic"                     { ATOMIC }
+  | "_Bool"                       { BOOL }
+  | "_Complex"                    { COMPLEX }
+  | "_Generic"                    { GENERIC }
+  | "_Imaginary"                  { IMAGINARY }
+  | "_Noreturn"                   { NORETURN }
+  | "_Static_assert"              { STATIC_ASSERT }
+  | "_Thread_local"               { THREAD_LOCAL }
+  | "auto"                        { AUTO }
+  | "break"                       { BREAK }
+  | "case"                        { CASE }
+  | "char"                        { CHAR }
+  | "const"                       { CONST }
+  | "continue"                    { CONTINUE }
+  | "default"                     { DEFAULT }
+  | "do"                          { DO }
+  | "double"                      { DOUBLE }
+  | "else"                        { ELSE }
+  | "enum"                        { ENUM }
+  | "extern"                      { EXTERN }
+  | "float"                       { FLOAT }
+  | "for"                         { FOR }
+  | "goto"                        { GOTO }
+  | "if"                          { IF }
+  | "inline"                      { INLINE }
+  | "int"                         { INT }
+  | "long"                        { LONG }
+  | "register"                    { REGISTER }
+  | "restrict"                    { RESTRICT }
+  | "return"                      { RETURN }
+  | "short"                       { SHORT }
+  | "signed"                      { SIGNED }
+  | "sizeof"                      { SIZEOF }
+  | "static"                      { STATIC }
+  | "struct"                      { STRUCT }
+  | "switch"                      { SWITCH }
+  | "typedef"                     { TYPEDEF }
+  | "union"                       { UNION }
+  | "unsigned"                    { UNSIGNED }
+  | "void"                        { VOID }
+  | "volatile"                    { VOLATILE }
+  | "while"                       { WHILE }
+  | identifier as id              { NAME id }
   | eof                           { EOF }
   | _                             { failwith "Lexer error" }
 
