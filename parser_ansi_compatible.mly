@@ -392,7 +392,7 @@ declaration:
     {}
 
 (* [declaration_specifier] corresponds to declaration-specifier
-   in the C11 standard, deprived of TYPEDEF and of type specifiers. *)
+   in the C18 standard, deprived of TYPEDEF and of type specifiers. *)
 
 %inline declaration_specifier:
 | storage_class_specifier (* deprived of TYPEDEF *)
@@ -462,7 +462,7 @@ init_declarator(declarator):
   {}
 
 (* [storage_class_specifier] corresponds to storage-class-specifier in the
-   C11 standard, deprived of TYPEDEF (which receives special treatment). *)
+   C18 standard, deprived of TYPEDEF (which receives special treatment). *)
 
 storage_class_specifier:
 | EXTERN
@@ -512,6 +512,10 @@ struct_declaration_list:
 | struct_declaration_list struct_declaration
     {}
 
+(* To avoid complicating the grammar, we do not allow using alignment
+   specifiers in structs (which is a C18 feature) when no type specifier is
+   present (this is a C89 feature). *)
+
 struct_declaration:
 | specifier_qualifier_list(empty) SEMICOLON
 | type_qualifier_list(empty)      SEMICOLON
@@ -524,8 +528,8 @@ struct_declaration:
    in the comment above [declaration_specifiers]. *)
 
 specifier_qualifier_list(suff):
-| list_eq1(type_specifier_unique, type_qualifier, suff)
-| list_ge1(type_specifier_nonunique, type_qualifier, suff)
+| list_eq1(type_specifier_unique, type_qualifier | alignment_specifier {}, suff)
+| list_ge1(type_specifier_nonunique, type_qualifier | alignment_specifier {}, suff)
     {}
 
 pref_struct_declarator_list(pref, ident):

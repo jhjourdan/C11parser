@@ -36,7 +36,7 @@ let parser = ref (fun _ _ -> assert false)
 let set_std = function
   | "c89" | "c90" ->
     parser := Parser_ansi_compatible.translation_unit_file
-  | "c99" | "c11" ->
+  | "c99" | "c11" | "c18" ->
     parser := Parser.translation_unit_file
   | _ -> assert false
 
@@ -47,7 +47,7 @@ contains invalid syntax.\n\
 Options available:"
 
 let opts = [
-    "-std",                      Arg.Symbol (["c89"; "c90"; "c99"; "c11"], set_std),
+    "-std",                      Arg.Symbol (["c89"; "c90"; "c99"; "c11"; "c18"], set_std),
     " Sets which grammar to use.";
     "-c99-scoping",              Arg.Set Options.c99_scoping,
     " When using the c89/c90 grammar, uses C99 scoping rules instead of the C89 ones. ";

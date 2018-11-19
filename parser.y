@@ -146,7 +146,7 @@ option_COMMA_:
 | COMMA
     {}
 
-option___anonymous_0_:
+option___anonymous_2_:
   
     {}
 | COMMA ELLIPSIS
@@ -260,16 +260,26 @@ option_type_qualifier_list_:
 | type_qualifier_list
     {}
 
+list___anonymous_0_:
+  
+    {}
+| type_qualifier list___anonymous_0_
+    {}
+| alignment_specifier list___anonymous_0_
+    {}
+
+list___anonymous_1_:
+  
+    {}
+| type_qualifier list___anonymous_1_
+    {}
+| alignment_specifier list___anonymous_1_
+    {}
+
 list_declaration_specifier_:
   
     {}
 | declaration_specifier list_declaration_specifier_
-    {}
-
-list_type_qualifier_:
-  
-    {}
-| type_qualifier list_type_qualifier_
     {}
 
 list_eq1_TYPEDEF_declaration_specifier_:
@@ -278,16 +288,28 @@ list_eq1_TYPEDEF_declaration_specifier_:
 | declaration_specifier list_eq1_TYPEDEF_declaration_specifier_
     {}
 
+list_eq1_type_specifier_unique___anonymous_0_:
+  type_specifier_unique list___anonymous_0_
+    {}
+| type_qualifier list_eq1_type_specifier_unique___anonymous_0_
+    {}
+| alignment_specifier list_eq1_type_specifier_unique___anonymous_0_
+    {}
+
 list_eq1_type_specifier_unique_declaration_specifier_:
   type_specifier_unique list_declaration_specifier_
     {}
 | declaration_specifier list_eq1_type_specifier_unique_declaration_specifier_
     {}
 
-list_eq1_type_specifier_unique_type_qualifier_:
-  type_specifier_unique list_type_qualifier_
+list_ge1_type_specifier_nonunique___anonymous_1_:
+  type_specifier_nonunique list___anonymous_1_
     {}
-| type_qualifier list_eq1_type_specifier_unique_type_qualifier_
+| type_specifier_nonunique list_ge1_type_specifier_nonunique___anonymous_1_
+    {}
+| type_qualifier list_ge1_type_specifier_nonunique___anonymous_1_
+    {}
+| alignment_specifier list_ge1_type_specifier_nonunique___anonymous_1_
     {}
 
 list_ge1_type_specifier_nonunique_declaration_specifier_:
@@ -296,14 +318,6 @@ list_ge1_type_specifier_nonunique_declaration_specifier_:
 | type_specifier_nonunique list_ge1_type_specifier_nonunique_declaration_specifier_
     {}
 | declaration_specifier list_ge1_type_specifier_nonunique_declaration_specifier_
-    {}
-
-list_ge1_type_specifier_nonunique_type_qualifier_:
-  type_specifier_nonunique list_type_qualifier_
-    {}
-| type_specifier_nonunique list_ge1_type_specifier_nonunique_type_qualifier_
-    {}
-| type_qualifier list_ge1_type_specifier_nonunique_type_qualifier_
     {}
 
 list_eq1_eq1_TYPEDEF_type_specifier_unique_declaration_specifier_:
@@ -729,9 +743,9 @@ struct_declaration:
     {}
 
 specifier_qualifier_list:
-  list_eq1_type_specifier_unique_type_qualifier_
+  list_eq1_type_specifier_unique___anonymous_0_
     {}
-| list_ge1_type_specifier_nonunique_type_qualifier_
+| list_ge1_type_specifier_nonunique___anonymous_1_
     {}
 
 struct_declarator_list:
@@ -829,7 +843,7 @@ type_qualifier_list:
     {}
 
 parameter_type_list:
-  parameter_list option___anonymous_0_ save_context
+  parameter_list option___anonymous_2_ save_context
     {}
 
 parameter_list:

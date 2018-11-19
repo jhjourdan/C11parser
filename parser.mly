@@ -366,8 +366,6 @@ relational_expression:
 | relational_expression relational_operator shift_expression
     {}
 
-
-
 equality_operator:
   "==" | "!=" {}
 
@@ -446,7 +444,7 @@ declaration:
 | static_assert_declaration
     {}
 
-(* [declaration_specifier] corresponds to one declaration specifier in the C11
+(* [declaration_specifier] corresponds to one declaration specifier in the C18
    standard, deprived of "typedef" and of type specifiers. *)
 
 declaration_specifier:
@@ -501,7 +499,7 @@ init_declarator(declarator):
     {}
 
 (* [storage_class_specifier] corresponds to storage-class-specifier in the
-   C11 standard, deprived of ["typedef"] (which receives special treatment). *)
+   C18 standard, deprived of ["typedef"] (which receives special treatment). *)
 
 storage_class_specifier:
 | "extern"
@@ -561,8 +559,8 @@ struct_declaration:
    same constraint as [declaration_specifiers] (see above). *)
 
 specifier_qualifier_list:
-| list_eq1(type_specifier_unique,    type_qualifier)
-| list_ge1(type_specifier_nonunique, type_qualifier)
+| list_eq1(type_specifier_unique,    type_qualifier | alignment_specifier {})
+| list_ge1(type_specifier_nonunique, type_qualifier | alignment_specifier {})
     {}
 
 struct_declarator_list:
@@ -616,9 +614,7 @@ alignment_specifier:
     {}
 
 declarator:
-| d = direct_declarator
-    { d }
-| pointer d = direct_declarator
+| ioption(pointer) d = direct_declarator
     { other_declarator d }
 
 (* The occurrences of [save_context] inside [direct_declarator] and
@@ -677,11 +673,6 @@ abstract_declarator:
 | pointer
 | ioption(pointer) direct_abstract_declarator
     {}
-
-
-
-
-
 
 direct_abstract_declarator:
 | "(" save_context abstract_declarator ")"
