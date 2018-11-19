@@ -1,7 +1,7 @@
 C11parser
 =========
 
-##### A correct C18 parser written using Menhir and OCaml
+##### A correct C89/C90/C99/C11/C18 parser written using Menhir and OCaml
 
 The operation and design of this parser are described in detail in the
 following journal paper (in process of review for publication):
@@ -34,7 +34,7 @@ The following command-line options are available:
     declaration were not required to have a type specifier, in which
     case "int" was used (it still recognizes C99, C11 and C18 constructs).
 
-    `c99` and `c18` use the new, simpler grammar: declarations are
+    `c99`, `c11` and `c18` use the new, simpler grammar: Declarations are
     required to have a type specifier, and the scoping rules are
     different.
 
