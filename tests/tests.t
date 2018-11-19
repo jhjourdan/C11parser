@@ -41,7 +41,9 @@ SHOULD FAIL (does not because we do not have a semantic analysis):
   $ $PARSECMD < $TESTDIR/bitfield_declaration_ambiguity.fail.c
   $ $PARSECMD < $TESTDIR/bitfield_declaration_ambiguity.ok.c
   $ $PARSECMD < $TESTDIR/atomic_parenthesis.c
+  $ $PARSECMD < $TESTDIR/aligned_struct_c18.c
   $ ls $TESTDIR/*.c
+  */tests/aligned_struct_c18.c (glob)
   */tests/argument_scope.c (glob)
   */tests/atomic.c (glob)
   */tests/atomic_parenthesis.c (glob)
