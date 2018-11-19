@@ -42,7 +42,17 @@ clean:
 	rm -f parser.output parser.tab.c
 
 parser.y: parser.mly
-	$(MENHIR) --only-preprocess-uu $< > $@
+	rm -f $@
+
+	echo /\* > $@
+	echo Jacques-Henri Jourdan, Inria Paris >>$@
+	echo François Pottier, Inria Paris >>$@
+	echo >>$@
+	cat LICENSE >> $@
+	echo \*/ >> $@
+	echo >>$@
+
+	$(MENHIR) --only-preprocess-uu $< >> $@
 	bison -r all $@
 
 realclean: clean
