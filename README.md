@@ -54,11 +54,11 @@ The following command-line options are available:
 If you want to use this parser in a C front-end, you should fill the
 semantic actions of .mly files with your own code for building your
 AST:
-  - The file `parser.mly` contains a C99/C18 compliant parser. It
+  - The file `parser.mly` contains a C99/C11/C18 compliant parser. It
     mostly follows the grammar of the C18 standard.
-  - The file `parser_ansi_compatible.mly` is compliant with C89, C99 and
-    C18 (depending on the options given in `options.ml`). It is
-    significantly more complex than `parser.mly`.
+  - The file `parser_ansi_compatible.mly` is compliant with C89, C99,
+    C11 and C18 (depending on the options given in `options.ml`). It
+    is significantly more complex than `parser.mly`.
 
 The test suite
 --------------
