@@ -264,7 +264,7 @@ and hash = parse
     "\"" [^ '\n' '\"']* "\"" [^ '\n']* '\n'
   | whitespace_char_no_newline* "pragma"
     whitespace_char_no_newline+ [^ '\n']* '\n'
-      { initial_linebegin lexbuf }
+      { new_line lexbuf; initial_linebegin lexbuf }
   | [^ '\n']* eof
       { failwith "unexpected end of file" }
   | _
