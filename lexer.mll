@@ -131,7 +131,7 @@ let escape_sequence =
 
 rule initial = parse
   | whitespace_char_no_newline+   { initial lexbuf }
-  | '\n'                          { initial_linebegin lexbuf }
+  | '\n'                          { new_line lexbuf; initial_linebegin lexbuf }
   | "/*"                          { multiline_comment lexbuf; initial lexbuf }
   | "//"                          { singleline_comment lexbuf; initial lexbuf }
   | integer_constant              { CONSTANT }
