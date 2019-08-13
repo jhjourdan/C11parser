@@ -133,7 +133,7 @@ rule initial = parse
   | whitespace_char_no_newline+   { initial lexbuf }
   | '\n'                          { new_line lexbuf; initial_linebegin lexbuf }
   | "/*"                          { multiline_comment lexbuf; initial lexbuf }
-  | "//"                          { singleline_comment lexbuf; initial lexbuf }
+  | "//"                          { singleline_comment lexbuf; initial_linebegin lexbuf }
   | integer_constant              { CONSTANT }
   | decimal_floating_constant     { CONSTANT }
   | hexadecimal_floating_constant { CONSTANT }
