@@ -138,7 +138,7 @@ rule initial = parse
   | decimal_floating_constant     { CONSTANT }
   | hexadecimal_floating_constant { CONSTANT }
   | preprocessing_number          { failwith "These characters form a preprocessor number, but not a constant" }
-  | (['L' 'u' 'U']|"") "'"        { char_literal lexbuf; CONSTANT }
+  | (['L' 'u' 'U']|"") "'"        { char lexbuf; char_literal_end lexbuf; CONSTANT }
   | (['L' 'u' 'U']|""|"u8") "\""  { string_literal lexbuf; STRING_LITERAL }
   | "..."                         { ELLIPSIS }
   | "+="                          { ADD_ASSIGN }
@@ -248,10 +248,10 @@ and char = parse
   | '\\' _                        { failwith "incorrect escape sequence" }
   | _                             { }
 
-and char_literal = parse
+and char_literal_end = parse
   | '\''       { }
   | '\n' | eof { failwith "missing terminating \"'\" character" }
-  | ""         { char lexbuf; char_literal lexbuf }
+  | ""         { char lexbuf; char_literal_end lexbuf }
 
 and string_literal = parse
   | '\"'       { }
