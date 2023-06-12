@@ -260,7 +260,7 @@ and string_literal = parse
 
 (* We assume gcc -E syntax but try to tolerate variations. *)
 and hash = parse
-  | whitespace_char_no_newline+ decimal_constant whitespace_char_no_newline*
+  | whitespace_char_no_newline+ digit* whitespace_char_no_newline*
     "\"" [^ '\n' '\"']* "\"" [^ '\n']* '\n'
   | whitespace_char_no_newline* "pragma"
     whitespace_char_no_newline+ [^ '\n']* '\n'
