@@ -42,6 +42,7 @@ SHOULD FAIL (does not because we do not have a semantic analysis):
   $ $PARSECMD < $TESTDIR/bitfield_declaration_ambiguity.ok.c
   $ $PARSECMD < $TESTDIR/atomic_parenthesis.c
   $ $PARSECMD < $TESTDIR/aligned_struct_c18.c
+  $ $PARSECMD < $TESTDIR/concatenated_strings.c
   $ ls $TESTDIR/*.c
   */tests/aligned_struct_c18.c (glob)
   */tests/argument_scope.c (glob)
@@ -55,6 +56,7 @@ SHOULD FAIL (does not because we do not have a semantic analysis):
   */tests/c11-noreturn.c (glob)
   */tests/c1x-alignas.c (glob)
   */tests/char-literal-printing.c (glob)
+  */tests/concatenated_strings.c (glob)
   */tests/control-scope.c (glob)
   */tests/dangling_else.c (glob)
   */tests/dangling_else_lookahead.c (glob)
