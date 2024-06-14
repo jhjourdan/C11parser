@@ -204,12 +204,18 @@ declarator_typedefname(ident):
 | d = declarator(ident)
     { declare_typedefname (identifier d); d }
 
+(* Merge source-level string literals. *)
+string_literal:
+| STRING_LITERAL
+| string_literal STRING_LITERAL
+    {}
+
 (* Actual grammar *)
 
 primary_expression:
 | var_name
 | CONSTANT
-| STRING_LITERAL
+| string_literal
 | LPAREN expression RPAREN
 | generic_selection
     {}
@@ -681,7 +687,7 @@ designator:
     {}
 
 static_assert_declaration:
-| STATIC_ASSERT LPAREN constant_expression COMMA STRING_LITERAL RPAREN SEMICOLON
+| STATIC_ASSERT LPAREN constant_expression COMMA string_literal RPAREN SEMICOLON
     {}
 
 statement:

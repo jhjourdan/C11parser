@@ -267,15 +267,18 @@ declarator_typedefname:
 | d = declarator
     { declare_typedefname (identifier d); d }
 
-
-
+(* Merge source-level string literals. *)
+string_literal:
+| STRING_LITERAL
+| string_literal STRING_LITERAL
+    {}
 
 (* End of the helpers, and beginning of the grammar proper: *)
 
 primary_expression:
 | var_name
 | CONSTANT
-| STRING_LITERAL
+| string_literal
 | "(" expression ")"
 | generic_selection
     {}
@@ -707,7 +710,7 @@ designator:
     {}
 
 static_assert_declaration:
-| "_Static_assert" "(" constant_expression "," STRING_LITERAL ")" ";"
+| "_Static_assert" "(" constant_expression "," string_literal ")" ";"
     {}
 
 statement:

@@ -388,12 +388,18 @@ declarator_typedefname:
   declarator
     {}
 
+string_literal:
+  STRING_LITERAL
+    {}
+| string_literal STRING_LITERAL
+    {}
+
 primary_expression:
   var_name
     {}
 | CONSTANT
     {}
-| STRING_LITERAL
+| string_literal
     {}
 | LPAREN expression RPAREN
     {}
@@ -921,7 +927,7 @@ designator:
     {}
 
 static_assert_declaration:
-  STATIC_ASSERT LPAREN constant_expression COMMA STRING_LITERAL RPAREN SEMICOLON
+  STATIC_ASSERT LPAREN constant_expression COMMA string_literal RPAREN SEMICOLON
     {}
 
 statement:
