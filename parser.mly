@@ -275,7 +275,7 @@ declarator_typedefname:
 primary_expression:
 | var_name
 | CONSTANT
-| STRING_LITERAL
+| string_literal
 | "(" expression ")"
 | generic_selection
     {}
@@ -707,7 +707,7 @@ designator:
     {}
 
 static_assert_declaration:
-| "_Static_assert" "(" constant_expression "," STRING_LITERAL ")" ";"
+| "_Static_assert" "(" constant_expression "," string_literal ")" ";"
     {}
 
 statement:
@@ -785,4 +785,9 @@ function_definition:
 declaration_list:
 | declaration
 | declaration_list declaration
+    {}
+
+string_literal:
+| STRING_LITERAL
+| string_literal STRING_LITERAL
     {}
