@@ -56,8 +56,12 @@ let identifier_nondigit =
 
 let identifier = identifier_nondigit (identifier_nondigit|digit)*
 
-(* Whitespaces *)
-let whitespace_char_no_newline = [' ' '\t' '\012' '\r']
+(* Whitespaces. '\r' is not considered as white-space by the standard,
+   but we include it in order to accept files encoded with DOS-style
+   line endings.  Beware : \011 and \012 are DECIMAL escape
+   codes. They correspond to vertical tab and form feed,
+   respectively. *)
+let whitespace_char_no_newline = [' ' '\t' '\011' '\012' '\r']
 
 (* Integer constants *)
 let nonzero_digit = ['1'-'9']
